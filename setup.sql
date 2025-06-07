@@ -68,3 +68,4 @@ CREATE TABLE BookingSnacks (
     FOREIGN KEY (booking_id) REFERENCES Bookings(booking_id),
     FOREIGN KEY (snack_id) REFERENCES Snacks(snack_id)
 );
+INSERT INTO USERS (name, email, password, role) VALUES ("admin", "admin@admin.com", "passwd", "ADMIN")
