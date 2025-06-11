@@ -67,14 +67,5 @@ CREATE TABLE BookingSnacks (
     FOREIGN KEY (booking_id) REFERENCES Bookings(booking_id),
     FOREIGN KEY (snack_id) REFERENCES Snacks(snack_id)
 );
-CREATE TABLE BookingReport (
-    booking_id INT NOT NULL,
-    seat_id INT NOT NULL,
-    snack_id INT DEFAULT NULL,
-    quantity INT DEFAULT NULL,
-    FOREIGN KEY (booking_id) REFERENCES Bookings(booking_id),
-    FOREIGN KEY (seat_id) REFERENCES Seats(seat_id),
-    FOREIGN KEY (snack_id) REFERENCES Snacks(snack_id)
-);
 
 INSERT INTO USERS (name, email, password, role) VALUES ("admin", "admin@mbs.com", "passwd", "ADMIN");

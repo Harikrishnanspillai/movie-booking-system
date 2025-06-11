@@ -4,7 +4,7 @@ import javax.swing.*;
 
 public class App {
     public static void main(String[] args) {
-        JFrame frame = new JFrame("Panel Switching Example");
+        JFrame frame = new JFrame("MBS");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JLabel title = new JLabel("Movie Ticket Booking System");
         title.setFont(new Font("Courier New", Font.BOLD | Font.ITALIC, 22));

@@ -1,6 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.sql.*;
 import java.util.*;
 import java.util.List;
@@ -13,6 +12,7 @@ public class SeatPanel extends JPanel {
     public SeatPanel(JPanel parent, JPanel prePanel, int slotId) {
         this.parentPanel = parent;
         this.prevPanel = prePanel;
+        List<Integer> seatIds = new ArrayList<>();
 
         JPanel seatGrid = new JPanel(new GridLayout(8, 10, 5, 5));
         setLayout(new BorderLayout());
@@ -27,11 +27,14 @@ public class SeatPanel extends JPanel {
             parentPanel.repaint();
         });
         confirmButton.addActionListener((e) ->{
-            nextPanel = new BookingPanel(parentPanel, prevPanel, seats.toArray(new Seat[0]));
+            nextPanel = new BookingPanel(parentPanel, prevPanel, seatIds.toArray(new Integer[0]));
+            parentPanel.removeAll();
+            parentPanel.add(nextPanel, BorderLayout.CENTER);
+            parentPanel.revalidate();
+            parentPanel.repaint();
         });
             try {
             Seat[] seats = listAllSeats(slotId);
-            List<Integer> seatIds = new ArrayList<>();
             if (seats.length != 0){
             for (Seat s : seats) {
             JButton seatButton = new JButton(s.getSeatNumber());

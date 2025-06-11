@@ -20,7 +20,7 @@ public class AdminTimeSlotPanel extends JPanel {
         JTextField endField = new JTextField(20);
 
         JLabel priceLabel = new JLabel("Price:");
-        JTextField priceField = new JTextField(20);
+        JTextField priceField = new JTextField("150", 20);
 
         JButton backButton = new JButton("Back");
         JButton submitButton = new JButton("Submit");
