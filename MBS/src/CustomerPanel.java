@@ -34,6 +34,13 @@ public class CustomerPanel extends JPanel{
             parentPanel.repaint();
 
         });
+        viewBooked.addActionListener(e ->{
+            nextPanel = new CustomerTicketsPanel(parentPanel, this);
+            parentPanel.removeAll();
+            parentPanel.add(nextPanel, BorderLayout.CENTER);
+            parentPanel.revalidate();
+            parentPanel.repaint();
+        });
 
 
         add(welcome);

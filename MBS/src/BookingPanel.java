@@ -20,7 +20,7 @@ public class BookingPanel extends JPanel{
         });
         JButton no = new JButton("No");
         no.addActionListener(e -> {
-            nextPanel = new PaymentPanel(parentPanel, this, seatIds);
+            nextPanel = new PaymentPanel(parentPanel, new CustomerPanel(UserPanel.getUser(), parentPanel, new UserPanel(parentPanel)), seatIds);
             parentPanel.removeAll();
             parentPanel.add(nextPanel, BorderLayout.CENTER);
             parentPanel.revalidate();
@@ -28,15 +28,17 @@ public class BookingPanel extends JPanel{
         });
         JButton yes = new JButton("Yes");
         yes.addActionListener(e -> {
-            nextPanel = new SnackPanel(parentPanel, this, seatIds);
+            nextPanel = new SnackPanel(parentPanel, new CustomerPanel(UserPanel.getUser(), parentPanel, new UserPanel(parentPanel)), seatIds);
             parentPanel.removeAll();
             parentPanel.add(nextPanel, BorderLayout.CENTER);
             parentPanel.revalidate();
             parentPanel.repaint();
         });
+
+        JLabel msg = new JLabel("Would u like snacks with that?");
         
 
-        add(new JLabel("Would u like snacks with that?"));
+        add(msg);
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         buttonPanel.add(backButton);
         buttonPanel.add(no);

@@ -1,4 +1,3 @@
-
 import java.awt.*;
 import java.sql.*;
 import java.util.ArrayList;
@@ -39,9 +38,6 @@ public class MovieListPanel extends JPanel{
 
                 add(movieButton);
                 }
-                for (int i = 0; i>=(movies.length%3); i++){
-                    add(new JLabel());
-                }
                 add(backButton);
             }
             else{
@@ -49,9 +45,7 @@ public class MovieListPanel extends JPanel{
                 msg.setFont(new Font("Courier New", Font.BOLD, 20));
                 msg.setHorizontalAlignment(SwingConstants.CENTER);
                 msg.setVerticalAlignment(SwingConstants.CENTER);
-                add(new JLabel());
                 add(msg);
-                add(new JLabel());
                 add(backButton);
             }
         } catch (Exception err) {

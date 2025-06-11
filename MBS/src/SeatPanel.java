@@ -26,7 +26,11 @@ public class SeatPanel extends JPanel {
             parentPanel.revalidate();
             parentPanel.repaint();
         });
-        confirmButton.addActionListener((e) ->{
+        confirmButton.addActionListener((e) -> {
+            if (seatIds.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please select at least one seat before proceeding.", "Selection Required", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
             nextPanel = new BookingPanel(parentPanel, prevPanel, seatIds.toArray(new Integer[0]));
             parentPanel.removeAll();
             parentPanel.add(nextPanel, BorderLayout.CENTER);

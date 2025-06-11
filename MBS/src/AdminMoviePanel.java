@@ -1,6 +1,5 @@
 import java.awt.*;
 import java.sql.*;
-import javax.security.auth.login.LoginContext;
 import javax.swing.*;
 
 public class AdminMoviePanel extends JPanel {

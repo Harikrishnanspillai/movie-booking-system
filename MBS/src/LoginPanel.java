@@ -6,12 +6,11 @@ class LoginPanel extends JPanel {
     private JPanel parentPanel;
     private JPanel prevPanel;
     private JPanel nextPanel;
-    public static User u;
 
     public LoginPanel(JPanel parent, JPanel prePanel) {
         this.parentPanel = parent;
         this.prevPanel = prePanel;
-        setLayout(new GridLayout(3, 2, 10, 10));
+        setLayout(new FlowLayout());
 
         JLabel emailLabel = new JLabel("Email:");
         JTextField emailField = new JTextField(20);
@@ -29,7 +28,8 @@ class LoginPanel extends JPanel {
 
         submitButton.addActionListener((e) -> {
             try {
-                u = login(emailField.getText(), new String(passwordField.getPassword()));
+                User u = login(emailField.getText(), new String(passwordField.getPassword()));
+                UserPanel.setUser(u);
                 if(("Admin".equals(u.getClass().getName()))){
                     nextPanel = new AdminPanel(u, parentPanel, new UserPanel(parentPanel));
                     parentPanel.removeAll();
@@ -53,6 +53,7 @@ class LoginPanel extends JPanel {
             }
         });
         backButton.addActionListener(e -> {
+            UserPanel.clearUser();
             parentPanel.removeAll();
             parentPanel.add(prevPanel, BorderLayout.CENTER);
             parentPanel.revalidate();
@@ -61,6 +62,7 @@ class LoginPanel extends JPanel {
     }
     public static User login(String email, String passwd) {
         String query = "SELECT * FROM Users WHERE email = ? AND password = ?";
+        passwd = PassHash.encode(passwd);
         try (Connection conn = DBC.Connect(); PreparedStatement stmt = conn.prepareStatement(query);){
             stmt.setString(1, email);
             stmt.setString(2, passwd);

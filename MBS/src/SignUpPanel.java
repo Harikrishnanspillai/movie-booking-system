@@ -6,7 +6,6 @@ class SignUpPanel extends JPanel {
     private JPanel parentPanel;
     private JPanel prevPanel;
     private JPanel nextPanel;
-    public static User u;
 
     public SignUpPanel(JPanel parent, JPanel prePanel) {
         this.parentPanel = parent;
@@ -32,6 +31,7 @@ class SignUpPanel extends JPanel {
         add(submitButton);
 
         backButton.addActionListener(e -> {
+            UserPanel.clearUser();
             parentPanel.removeAll();
             parentPanel.add(prevPanel, BorderLayout.CENTER);
             parentPanel.revalidate();
@@ -40,7 +40,8 @@ class SignUpPanel extends JPanel {
 
         submitButton.addActionListener((e) -> {
             try {
-                u = signup(nameField.getText(), emailField.getText(), new String(passwordField.getPassword()));
+                User u = signup(nameField.getText(), emailField.getText(), new String(passwordField.getPassword()));
+                UserPanel.setUser(u);
                 nextPanel = new CustomerPanel(u, parent, new UserPanel(parentPanel));
                 parentPanel.removeAll();
                 parentPanel.add(nextPanel, BorderLayout.CENTER);
@@ -60,6 +61,7 @@ class SignUpPanel extends JPanel {
     public static User signup(String name, String email, String passwd) {
         String checkQuery = "SELECT user_id FROM Users WHERE email = ?";
         String insertQuery = "INSERT INTO Users (name, email, password, role) VALUES (?, ?, ?, ?)";
+        passwd = PassHash.encode(passwd);
     
         try (Connection conn = DBC.Connect()) {
             try (PreparedStatement checkStmt = conn.prepareStatement(checkQuery)) {
