@@ -6,6 +6,7 @@ class LoginPanel extends JPanel {
     private JPanel parentPanel;
     private JPanel prevPanel;
     private JPanel nextPanel;
+    public static User u;
 
     public LoginPanel(JPanel parent, JPanel prePanel) {
         this.parentPanel = parent;
@@ -28,19 +29,24 @@ class LoginPanel extends JPanel {
 
         submitButton.addActionListener((e) -> {
             try {
-                User u = login(emailField.getText(), new String(passwordField.getPassword()));
+                u = login(emailField.getText(), new String(passwordField.getPassword()));
                 if(("Admin".equals(u.getClass().getName()))){
-                    nextPanel = new AdminPanel(u, parentPanel, this);
+                    nextPanel = new AdminPanel(u, parentPanel, new UserPanel(parentPanel));
                     parentPanel.removeAll();
                     parentPanel.add(nextPanel, BorderLayout.CENTER);
                     parentPanel.revalidate();
                     parentPanel.repaint();
                 }
                 else if("Customer".equals(u.getClass().getName())){
-                    
+                    nextPanel = new CustomerPanel(u, parentPanel, new UserPanel(parentPanel));
+                    parentPanel.removeAll();
+                    parentPanel.add(nextPanel, BorderLayout.CENTER);
+                    parentPanel.revalidate();
+                    parentPanel.repaint();
                 }
             }
             catch(Exception err){
+                JOptionPane.showMessageDialog(null, "Some Error has occured, Please try again", "SQLError", JOptionPane.ERROR_MESSAGE);
                 parentPanel.removeAll();
                 parentPanel.add(prevPanel, BorderLayout.CENTER);
                 parentPanel.revalidate();

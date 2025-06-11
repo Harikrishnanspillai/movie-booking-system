@@ -1,10 +1,12 @@
 import java.awt.*;
 import java.sql.*;
+import javax.security.auth.login.LoginContext;
 import javax.swing.*;
 
 public class AdminMoviePanel extends JPanel {
     private JPanel parentPanel;
     private JPanel prevPanel;
+    private JPanel nextPanel;
     public AdminMoviePanel(JPanel parent, JPanel prePanel) {
         this.parentPanel = parent;
         this.prevPanel = prePanel;
@@ -27,8 +29,9 @@ public class AdminMoviePanel extends JPanel {
 
         submitButton.addActionListener((e) ->{
             addMovie(titleField.getText(), genreField.getText(), Integer.parseInt(durationField.getText().trim()), languageField.getText());
+            nextPanel = new AdminTimeSlotPanel(parentPanel, new AdminPanel(LoginPanel.u, parentPanel, new UserPanel(parentPanel)));
             parentPanel.removeAll();
-            parentPanel.add(prevPanel, BorderLayout.CENTER);
+            parentPanel.add(nextPanel, BorderLayout.CENTER);
             parentPanel.revalidate();
             parentPanel.repaint();
         });
@@ -171,8 +174,17 @@ public class AdminMoviePanel extends JPanel {
         }
     }
     public void removeMovie(int movieId){
-        String sql = "DELETE FROM Movies WHERE movie_id = ?";
-        try (Connection conn = DBC.Connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+        String msql = "DELETE FROM Movies WHERE movie_id = ?";
+        String tsql = "DELETE FROM TimeSlots WHERE movie_id = ?";
+
+        try (Connection conn = DBC.Connect(); PreparedStatement stmt = conn.prepareStatement(tsql)) {
+            stmt.setInt(1, movieId);
+            int affectedRows = stmt.executeUpdate();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Some Error has occured, Please try again", "SQLError", JOptionPane.ERROR_MESSAGE);
+        }
+
+        try (Connection conn = DBC.Connect(); PreparedStatement stmt = conn.prepareStatement(msql)) {
             stmt.setInt(1, movieId);
             int affectedRows = stmt.executeUpdate();
             if (affectedRows > 0){

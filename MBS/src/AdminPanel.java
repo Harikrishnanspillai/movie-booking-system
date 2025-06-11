@@ -4,10 +4,10 @@ import javax.swing.*;
 
 public class AdminPanel extends JPanel{
     private JPanel parentPanel;
-    private LoginPanel prevPanel;
+    private JPanel prevPanel;
     private JPanel nextPanel;
 
-    public AdminPanel(User u, JPanel parent, LoginPanel prePanel){
+    public AdminPanel(User u, JPanel parent, JPanel prePanel){
         this.parentPanel = parent;
         this.prevPanel = prePanel;
         setLayout(new GridLayout(0, 1, 5, 5));
@@ -29,7 +29,7 @@ public class AdminPanel extends JPanel{
 
         backButton.addActionListener(e -> {
             parentPanel.removeAll();
-            parentPanel.add(prevPanel.getPrevPanel(), BorderLayout.CENTER);
+            parentPanel.add(prevPanel, BorderLayout.CENTER);
             parentPanel.revalidate();
             parentPanel.repaint();
         });

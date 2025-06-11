@@ -13,9 +13,19 @@ public class SnackListPanel extends JPanel{
         this.prevPanel = prePanel;
 
         setLayout(new GridLayout(3, 3, 10, 10));
+        JButton backButton = new JButton("Back");
+        backButton.setVerticalAlignment(SwingConstants.CENTER);
+        backButton.setHorizontalAlignment(SwingConstants.CENTER);
+        backButton.addActionListener(e -> {
+            parentPanel.removeAll();
+            parentPanel.add(prevPanel, BorderLayout.CENTER);
+            parentPanel.revalidate();
+            parentPanel.repaint();
+        });
 
         try {
             Snack[] snacks = listAllSnacks();
+            if (snacks.length != 0){
             for (Snack snack : snacks) {
             JButton movieButton = new JButton(snack.getName());
 
@@ -27,8 +37,24 @@ public class SnackListPanel extends JPanel{
                 parentPanel.repaint();
             });
 
-            add(movieButton);
+            add(movieButton); 
         }
+        for (int i = 0; i>(snacks.length%3); i++){
+                    add(new JLabel());
+                }
+                add(backButton);
+    }
+    else{
+                JLabel msg = new JLabel("Nothing to see here");
+                msg.setFont(new Font("Courier New", Font.BOLD, 20));
+                msg.setHorizontalAlignment(SwingConstants.CENTER);
+                msg.setVerticalAlignment(SwingConstants.CENTER);
+                add(new JLabel());
+                add(msg);
+                add(new JLabel());
+                add(backButton);
+            }
+        
         } catch (Exception err) {
             JOptionPane.showMessageDialog(null, "Some Error has occured, Please try again", "SQLError", JOptionPane.ERROR_MESSAGE);
         }
@@ -40,10 +66,20 @@ public class SnackListPanel extends JPanel{
         this.prevPanel = prePanel;
 
         setLayout(new GridLayout(3, 3, 10, 10));
+        JButton backButton = new JButton("Back");
+        backButton.setVerticalAlignment(SwingConstants.CENTER);
+        backButton.setHorizontalAlignment(SwingConstants.CENTER);
+        backButton.addActionListener(e -> {
+            parentPanel.removeAll();
+            parentPanel.add(prevPanel, BorderLayout.CENTER);
+            parentPanel.revalidate();
+            parentPanel.repaint();
+        });
 
         try {
             Snack[] snacks = listAllSnacks();
-            for (Snack snack : snacks) {
+            if (snacks.length != 0)
+            {for (Snack snack : snacks) {
             JButton movieButton = new JButton(snack.getName());
 
             movieButton.addActionListener(e -> {
@@ -54,8 +90,22 @@ public class SnackListPanel extends JPanel{
                 parentPanel.repaint();
             });
 
-            add(movieButton);
-        }
+            add(movieButton);}
+            for (int i = 0; i>(snacks.length%3); i++){
+                    add(new JLabel());
+                }
+                add(backButton);
+    }
+    else{
+                JLabel msg = new JLabel("Nothing to see here");
+                msg.setFont(new Font("Courier New", Font.BOLD, 20));
+                msg.setHorizontalAlignment(SwingConstants.CENTER);
+                msg.setVerticalAlignment(SwingConstants.CENTER);
+                add(new JLabel());
+                add(msg);
+                add(new JLabel());
+                add(backButton);
+            }
         } catch (Exception err) {
             JOptionPane.showMessageDialog(null, "Some Error has occured, Please try again", "SQLError", JOptionPane.ERROR_MESSAGE);
         }
