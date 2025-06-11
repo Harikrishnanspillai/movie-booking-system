@@ -8,10 +8,7 @@ public class AdminTimeSlotPanel extends JPanel {
     public AdminTimeSlotPanel(JPanel parent, JPanel prePanel) {
         this.parentPanel = parent;
         this.prevPanel = prePanel;
-        setLayout(new GridLayout(6, 2, 10, 10));
-
-        JLabel screenLabel = new JLabel("Screen ID:");
-        JTextField screenField = new JTextField(20);
+        setLayout(new GridLayout(5, 2, 10, 10));
 
         JLabel movieLabel = new JLabel("Movie:");
         JTextField movieField = new JTextField(20);
@@ -30,7 +27,7 @@ public class AdminTimeSlotPanel extends JPanel {
 
 
         submitButton.addActionListener((e) ->{
-            addTimeSlot(Integer.parseInt(screenField.getText().trim()), MovieID(movieField.getText()), startField.getText(), endField.getText(), Double.parseDouble(priceField.getText().trim()));
+            addTimeSlot( MovieID(movieField.getText()), startField.getText(), endField.getText(), Double.parseDouble(priceField.getText().trim()));
             parentPanel.removeAll();
             parentPanel.add(prevPanel, BorderLayout.CENTER);
             parentPanel.revalidate();
@@ -44,8 +41,6 @@ public class AdminTimeSlotPanel extends JPanel {
             parentPanel.repaint();
         });
 
-        add(screenLabel);
-        add(screenField);
         add(movieLabel);
         add(movieField);
         add(startLabel);
@@ -57,13 +52,10 @@ public class AdminTimeSlotPanel extends JPanel {
         add(backButton);
         add(submitButton);
     }
-    public AdminTimeSlotPanel(JPanel parent, JPanel prePanel, int slotId, int newScreenId, int newMovieId, String newStart, String newEnd, double newPrice) {
+    public AdminTimeSlotPanel(JPanel parent, JPanel prePanel, int slotId, int newMovieId, String newStart, String newEnd, double newPrice) {
         this.parentPanel = parent;
         this.prevPanel = prePanel;
         setLayout(new GridLayout(6, 2, 10, 10));
-
-        JLabel screenLabel = new JLabel("Screen ID:");
-        JTextField screenField = new JTextField(String.valueOf(newScreenId), 20);
 
         JLabel movieLabel = new JLabel("Movie:");
         JTextField movieField = new JTextField(MovieName(newMovieId), 20);
@@ -81,7 +73,7 @@ public class AdminTimeSlotPanel extends JPanel {
         JButton submitButton = new JButton("Submit");
 
         submitButton.addActionListener((e) ->{
-            editTimeSlot(slotId, Integer.parseInt(screenField.getText().trim()), MovieID(movieField.getText()), startField.getText(), endField.getText(), Double.parseDouble(priceField.getText().trim()));
+            editTimeSlot(slotId, MovieID(movieField.getText().trim()), startField.getText(), endField.getText(), Double.parseDouble(priceField.getText().trim()));
             parentPanel.removeAll();
             parentPanel.add(prevPanel, BorderLayout.CENTER);
             parentPanel.revalidate();
@@ -95,8 +87,7 @@ public class AdminTimeSlotPanel extends JPanel {
             parentPanel.repaint();
         });
 
-        add(screenLabel);
-        add(screenField);
+        
         add(movieLabel);
         add(movieField);
         add(startLabel);
@@ -140,32 +131,35 @@ public class AdminTimeSlotPanel extends JPanel {
         add(submitButton);
     }
 
-    public void addTimeSlot(int screenId, int movieId, String start, String end, double price) {
-        String sql = "INSERT INTO TimeSlots (movie_id, screen_id, start_time, end_time, price) VALUES (?, ?, ?, ?, ?)";
-        try (Connection conn = DBC.Connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+    public void addTimeSlot(int movieId, String start, String end, double price) {
+        String sql = "INSERT INTO TimeSlots (movie_id, start_time, end_time, price) VALUES (?, ?, ?, ?)";
+        try (Connection conn = DBC.Connect(); PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, movieId);
-            stmt.setInt(2, screenId);
-            stmt.setString(3, start);
-            stmt.setString(4, end);
-            stmt.setDouble(5, price);
+            stmt.setString(2, start);
+            stmt.setString(3, end);
+            stmt.setDouble(4, price);
 
             int affectedRows = stmt.executeUpdate();
             if (affectedRows > 0) {
+                ResultSet generatedKeys = stmt.getGeneratedKeys();
+                    if (generatedKeys.next()) {
+                        int slot_id = generatedKeys.getInt(1);
+                        addSeats(slot_id);
+                    }
                 JOptionPane.showMessageDialog(null, "Time slot added", "Info", JOptionPane.INFORMATION_MESSAGE);
             }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Some Error has occured, Please try again", "SQLError", JOptionPane.ERROR_MESSAGE);
         }
     }
-    public void editTimeSlot(int slotId, int newScreenId, int newMovieId, String newStart, String newEnd, double newPrice) {
-        String sql = "UPDATE TimeSlots SET screen_id = ?, movie_id = ?, start_time = ?, end_time = ?, price = ? WHERE slot_id = ?";
+    public void editTimeSlot(int slotId, int newMovieId, String newStart, String newEnd, double newPrice) {
+        String sql = "UPDATE TimeSlots SET movie_id = ?, start_time = ?, end_time = ?, price = ? WHERE slot_id = ?";
         try (Connection conn = DBC.Connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, newMovieId);
-            stmt.setInt(2, newScreenId);
-            stmt.setString(3, newStart);
-            stmt.setString(4, newEnd);
-            stmt.setDouble(5, newPrice);
-            stmt.setInt(6, slotId);
+            stmt.setString(2, newStart);
+            stmt.setString(3, newEnd);
+            stmt.setDouble(4, newPrice);
+            stmt.setInt(5, slotId);
 
             int affectedRows = stmt.executeUpdate();
             if (affectedRows > 0){
@@ -180,9 +174,9 @@ public class AdminTimeSlotPanel extends JPanel {
     }
     public void deleteTimeSlot(int slotId) {
         String sql = "DELETE FROM TimeSlots WHERE slot_id = ?";
+        deleteSeat(slotId);
         try (Connection conn = DBC.Connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, slotId);
-
             int affectedRows = stmt.executeUpdate();
             if (affectedRows > 0){
                 JOptionPane.showMessageDialog(null, "Time slot removed", "Info", JOptionPane.INFORMATION_MESSAGE);
@@ -223,5 +217,37 @@ public class AdminTimeSlotPanel extends JPanel {
 
         }
         return 0;
+    }
+
+    public void addSeats(int slotId){
+        try (Connection conn = DBC.Connect()){
+            String[] alph = {"A", "B", "C", "D", "E", "F", "G", "H"};
+            for (String i : alph){
+                for (int j = 1; j<=10; j++){
+                    String seatNo = String.format("%s%d", i, j);
+                    String sql = "INSERT INTO SEATS (slot_id, seat_number, is_booked) VALUES(?, ?, ?)";
+                    try (PreparedStatement stmt = conn.prepareStatement(sql)){
+                        stmt.setInt(1, slotId);
+                        stmt.setString(2, seatNo);
+                        stmt.setInt(3, 0);
+                        int rowsAffected = stmt.executeUpdate();
+                    }
+                }
+            }
+        }
+        catch (Exception err){
+            JOptionPane.showMessageDialog(null, "Some Error has occured", "SQLError", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void deleteSeat(int slotId){
+        String sql = "DELETE FROM Seats WHERE slot_id = ?";
+        try (Connection conn = DBC.Connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, slotId);
+
+            int affectedRows = stmt.executeUpdate();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Some Error has occured", "SQLError", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

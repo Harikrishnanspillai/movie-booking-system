@@ -31,29 +31,24 @@ public class TimeSlotListPanel extends JPanel{
                 JButton movieButton = new JButton(("From " + ts.getStartTime() + " to " + ts.getEndTime()));
 
                 movieButton.addActionListener(e -> {
-                    nextPanel = new AdminTimeSlotPanel(parent, prePanel, ts.getSlotId(), ts.getScreenId(), ts.getMovieId(), ts.getStartTime(), ts.getEndTime(), ts.getPrice());
+                    nextPanel = new AdminTimeSlotPanel(parent, prePanel, ts.getSlotId(), ts.getMovieId(), ts.getStartTime(), ts.getEndTime(), ts.getPrice());
                     parentPanel.removeAll();
                     parentPanel.add(nextPanel, BorderLayout.CENTER);
                     parentPanel.revalidate();
                     parentPanel.repaint();
                 });
 
-                add(movieButton);
+                add(movieButton, BorderLayout.CENTER);
                 }
-                for (int i = 0; i>=(timeSlots.length%3); i++){
-                    add(new JLabel());
-                }
-                add(backButton);
+                add(backButton, BorderLayout.SOUTH);
             }
             else{
                 JLabel msg = new JLabel("Nothing to see here");
                 msg.setFont(new Font("Courier New", Font.BOLD, 20));
                 msg.setHorizontalAlignment(SwingConstants.CENTER);
                 msg.setVerticalAlignment(SwingConstants.CENTER);
-                add(new JLabel());
                 add(msg);
-                add(new JLabel());
-                add(backButton);
+                add(backButton, BorderLayout.SOUTH);
             }
 
         } catch (Exception err) {
@@ -91,22 +86,16 @@ public class TimeSlotListPanel extends JPanel{
                 parentPanel.repaint();
             });
 
-            add(movieButton);
-        }
-        for (int i = 0; i>=(timeSlots.length%3); i++){
-                    add(new JLabel());
-                }
-                add(backButton);
+            add(movieButton, BorderLayout.CENTER);
+        }   add(backButton, BorderLayout.SOUTH);
     }
     else{
                 JLabel msg = new JLabel("Nothing to see here");
                 msg.setFont(new Font("Courier New", Font.BOLD, 20));
                 msg.setHorizontalAlignment(SwingConstants.CENTER);
                 msg.setVerticalAlignment(SwingConstants.CENTER);
-                add(new JLabel());
-                add(msg);
-                add(new JLabel());
-                add(backButton);
+                add(msg, BorderLayout.CENTER);
+                add(backButton, BorderLayout.SOUTH);
             }
         } catch (Exception err) {
             JOptionPane.showMessageDialog(null, "Some Error has occured, Please try again", "SQLError", JOptionPane.ERROR_MESSAGE);
@@ -123,13 +112,12 @@ public class TimeSlotListPanel extends JPanel{
 
             while (rs.next()) {
                 int slotId = rs.getInt("slot_id");
-                int screenId = rs.getInt("screen_id");
                 int movieID = rs.getInt("movie_id");
                 String start = rs.getString("start_time");
                 String end = rs.getString("end_time");
                 double price = rs.getDouble("price");
 
-                TimeSlot ts = new TimeSlot(slotId, screenId, movieID, start, end, price);
+                TimeSlot ts = new TimeSlot(slotId, movieID, start, end, price);
                 timeSlots.add(ts);
             }
             

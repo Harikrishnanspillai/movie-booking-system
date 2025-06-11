@@ -46,7 +46,6 @@ class LoginPanel extends JPanel {
                 }
             }
             catch(Exception err){
-                JOptionPane.showMessageDialog(null, "Some Error has occured, Please try again", "SQLError", JOptionPane.ERROR_MESSAGE);
                 parentPanel.removeAll();
                 parentPanel.add(prevPanel, BorderLayout.CENTER);
                 parentPanel.revalidate();
@@ -86,9 +85,5 @@ class LoginPanel extends JPanel {
             JOptionPane.showMessageDialog(null, "Some Error has occured, Please try again", "SQLError", JOptionPane.ERROR_MESSAGE);
         }
         return null;
-    }
-
-    public JPanel getPrevPanel() {
-        return prevPanel;
     }
 }

@@ -15,7 +15,7 @@ public class App {
         mainPanel.add(userPanel, BorderLayout.CENTER);
         frame.add(title, BorderLayout.NORTH);
         frame.add(mainPanel, BorderLayout.CENTER);
-        frame.setSize(600, 400);
+        frame.setSize(700, 500);
         frame.setVisible(true);
     }
 }

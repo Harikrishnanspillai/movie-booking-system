@@ -29,17 +29,19 @@ public class CustomerTimeSlotPanel extends JPanel{
             TimeSlot[] timeSlots = listAllSlots();
             if (timeSlots.length != 0){
             for (TimeSlot ts : timeSlots) {
-            JButton movieButton = new JButton(("From " + ts.getStartTime() + " to " + ts.getEndTime() + "\nPrice: " + ts.getPrice()));
+            JButton slotButton = new JButton(("<html>From " + ts.getStartTime() +
+                                  " to " + ts.getEndTime() +
+                                  "<br>Price: " + ts.getPrice() + "</html>"));
 
-            movieButton.addActionListener(e -> {
-                nextPanel = new SeatPanel(parent, prePanel, ts.getSlotId(), ts.getStartTime(), ts.getEndTime());
+            slotButton.addActionListener(e -> {
+                nextPanel = new SeatPanel(parent, prePanel, ts.getSlotId());
                 parentPanel.removeAll();
                 parentPanel.add(nextPanel, BorderLayout.CENTER);
                 parentPanel.revalidate();
                 parentPanel.repaint();
             });
 
-            add(movieButton);
+            add(slotButton);
         }
         for (int i = 0; i<(timeSlots.length%3); i++){
                     add(new JLabel());
@@ -51,10 +53,8 @@ public class CustomerTimeSlotPanel extends JPanel{
                 msg.setFont(new Font("Courier New", Font.BOLD, 20));
                 msg.setHorizontalAlignment(SwingConstants.CENTER);
                 msg.setVerticalAlignment(SwingConstants.CENTER);
-                add(new JLabel());
                 add(msg);
-                add(new JLabel());
-                add(backButton);
+                add(backButton, BorderLayout.CENTER);
             }
         } catch (Exception err) {
             JOptionPane.showMessageDialog(null, "Some Error has occured, Please try again", "SQLError", JOptionPane.ERROR_MESSAGE);
@@ -73,13 +73,12 @@ public class CustomerTimeSlotPanel extends JPanel{
 
             while (rs.next()) {
                 int slotId = rs.getInt("slot_id");
-                int screenId = rs.getInt("screen_id");
                 int movieID = rs.getInt("movie_id");
                 String start = rs.getString("start_time");
                 String end = rs.getString("end_time");
                 double price = rs.getDouble("price");
 
-                TimeSlot ts = new TimeSlot(slotId, screenId, movieID, start, end, price);
+                TimeSlot ts = new TimeSlot(slotId, movieID, start, end, price);
                 timeSlots.add(ts);
             }
             
@@ -102,13 +101,12 @@ public class CustomerTimeSlotPanel extends JPanel{
 
             while (rs.next()) {
                 int slotId = rs.getInt("slot_id");
-                int screenId = rs.getInt("screen_id");
                 int movieID = rs.getInt("movie_id");
                 String start = rs.getString("start_time");
                 String end = rs.getString("end_time");
                 double price = rs.getDouble("price");
 
-                TimeSlot ts = new TimeSlot(slotId, screenId, movieID, start, end, price);
+                TimeSlot ts = new TimeSlot(slotId, movieID, start, end, price);
                 timeSlots.add(ts);
             }
             

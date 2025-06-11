@@ -19,10 +19,9 @@ CREATE TABLE Movies (
 
 CREATE TABLE TimeSlots (
     slot_id INT PRIMARY KEY AUTO_INCREMENT,
-    screen_id INT NOT NULL,
     movie_id INT NOT NULL,
-    start_time TIME NOT NULL,
-    end_time TIME NOT NULL,
+    start_time DATETIME NOT NULL,
+    end_time DATETIME NOT NULL,
     price DECIMAL(5, 2) NOT NULL,
     FOREIGN KEY (movie_id) REFERENCES Movies(movie_id)
 );

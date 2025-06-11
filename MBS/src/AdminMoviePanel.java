@@ -29,9 +29,8 @@ public class AdminMoviePanel extends JPanel {
 
         submitButton.addActionListener((e) ->{
             addMovie(titleField.getText(), genreField.getText(), Integer.parseInt(durationField.getText().trim()), languageField.getText());
-            nextPanel = new AdminTimeSlotPanel(parentPanel, new AdminPanel(LoginPanel.u, parentPanel, new UserPanel(parentPanel)));
             parentPanel.removeAll();
-            parentPanel.add(nextPanel, BorderLayout.CENTER);
+            parentPanel.add(prevPanel, BorderLayout.CENTER);
             parentPanel.revalidate();
             parentPanel.repaint();
         });
@@ -111,10 +110,11 @@ public class AdminMoviePanel extends JPanel {
     public AdminMoviePanel(JPanel parent, JPanel prePanel ,int movieID, String movieTitle) {
         this.parentPanel = parent;
         this.prevPanel = prePanel;
-        setLayout(new FlowLayout());
+        setLayout(new FlowLayout(FlowLayout.CENTER));
 
         JLabel ConfirmLabel = new JLabel(("Are you sure want to delete, " + movieTitle));
         ConfirmLabel.setFont(new Font("Courier New", Font.BOLD, 18));
+        add(Box.createRigidArea(new Dimension(0, 20)));
 
         JButton backButton = new JButton("Back");
         JButton submitButton = new JButton("Confirm");
@@ -194,6 +194,47 @@ public class AdminMoviePanel extends JPanel {
                 JOptionPane.showMessageDialog(null, "Movie not found", "Info", JOptionPane.INFORMATION_MESSAGE);
             }
         } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Some Error has occured, Please try again", "SQLError", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    public void addTimeSlot(int movieId, String start, String end, double price) {
+        String sql = "INSERT INTO TimeSlots (movie_id, start_time, end_time, price) VALUES (?, ?, ?, ?)";
+        try (Connection conn = DBC.Connect(); PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setInt(1, movieId);
+            stmt.setString(2, start);
+            stmt.setString(3, end);
+            stmt.setDouble(4, price);
+
+            int affectedRows = stmt.executeUpdate();
+            if (affectedRows > 0) {
+                ResultSet generatedKeys = stmt.getGeneratedKeys();
+                    if (generatedKeys.next()) {
+                        int slot_id = generatedKeys.getInt(1);
+                        addSeats(slot_id);
+                    }
+                JOptionPane.showMessageDialog(null, "Time slot added", "Info", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Some Error has occured, Please try again", "SQLError", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    public void addSeats(int slotId){
+        try (Connection conn = DBC.Connect()){
+            String[] alph = {"A", "B", "C", "D", "E"};
+            for (String i : alph){
+                for (int j = 1; j<=10; j++){
+                    String seatNo = String.format("%s%d", i, j);
+                    String sql = "INSERT INTO SEATS (slot_id, seat_id, is_booked) VALUES(?, ? ?)";
+                    try (PreparedStatement stmt = conn.prepareStatement(sql)){
+                        stmt.setInt(1, slotId);
+                        stmt.setString(2, seatNo);
+                        stmt.setBoolean(3, false);
+                        int rowsAffected = stmt.executeUpdate();
+                    }
+                }
+            }
+        }
+        catch (Exception err){
             JOptionPane.showMessageDialog(null, "Some Error has occured, Please try again", "SQLError", JOptionPane.ERROR_MESSAGE);
         }
     }
