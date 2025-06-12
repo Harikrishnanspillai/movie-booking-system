@@ -183,7 +183,7 @@ public class AdminMoviePanel extends JPanel {
     }
     public void removeMovie(int movieId){
         String msql = "DELETE FROM Movies WHERE movie_id = ?";
-
+        deleteTimeSlot(movieId);
         try (Connection conn = DBC.Connect(); PreparedStatement stmt = conn.prepareStatement(msql)) {
             stmt.setInt(1, movieId);
             int affectedRows = stmt.executeUpdate();
@@ -213,6 +213,21 @@ public class AdminMoviePanel extends JPanel {
                         addSeats(slot_id);
                     }
                 JOptionPane.showMessageDialog(null, "Time slot added", "Info", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Some Error has occured, Please try again", "SQLError", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    public void deleteTimeSlot(int movieId) {
+        String sql = "DELETE FROM TimeSlots WHERE movie_id = ?";
+        try (Connection conn = DBC.Connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, movieId);
+            int affectedRows = stmt.executeUpdate();
+            if (affectedRows > 0){
+                JOptionPane.showMessageDialog(null, "Time slot removed", "Info", JOptionPane.INFORMATION_MESSAGE);
+            }
+            else{
+                JOptionPane.showMessageDialog(null, "Time slot not found", "Info", JOptionPane.INFORMATION_MESSAGE);
             }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Some Error has occured, Please try again", "SQLError", JOptionPane.ERROR_MESSAGE);

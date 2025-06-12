@@ -189,7 +189,6 @@ public AdminTimeSlotPanel(JPanel parent, JPanel prePanel, int slotId, int newMov
     }
     public void deleteTimeSlot(int slotId) {
         String sql = "DELETE FROM TimeSlots WHERE slot_id = ?";
-        deleteSeat(slotId);
         try (Connection conn = DBC.Connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, slotId);
             int affectedRows = stmt.executeUpdate();

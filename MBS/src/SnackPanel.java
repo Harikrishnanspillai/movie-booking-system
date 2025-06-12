@@ -21,7 +21,7 @@ public class SnackPanel extends JPanel {
         JPanel snackGrid = new JPanel(new GridLayout(0, 1, 10, 10));
         snackGrid.setBackground(Color.WHITE);
 
-        JButton backButton = styledButton("Back");
+        JButton backButton = styledButton("← Back");
         JButton confirmButton = styledButton("Confirm");
 
         backButton.addActionListener(e -> {
@@ -43,7 +43,7 @@ public class SnackPanel extends JPanel {
 
                     JLabel infoLabel = new JLabel(snack.getName() + " - ₹" + snack.getPrice() + " | Stock: " + snack.getQuantity());
                     infoLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-                    infoLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
+                    infoLabel.setFont(new Font("Sans Serif", Font.PLAIN, 14));
                     snackPanel.add(infoLabel, BorderLayout.NORTH);
 
                     JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -52,7 +52,7 @@ public class SnackPanel extends JPanel {
                     JButton minusButton = styledButton("-");
                     JButton plusButton = styledButton("+");
                     JLabel qtyLabel = new JLabel("0");
-                    qtyLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
+                    qtyLabel.setFont(new Font("Sans Serif", Font.PLAIN, 14));
                     final int[] qty = {0};
 
                     plusButton.addActionListener(e -> {

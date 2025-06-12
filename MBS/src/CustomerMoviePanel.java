@@ -16,7 +16,7 @@ public class CustomerMoviePanel extends JPanel {
         setLayout(new GridLayout(3, 3, 10, 10));
         setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-        JLabel heading = new JLabel("Movie List");
+        JLabel heading = new JLabel("Movies");
         heading.setFont(new Font("Sans Serif", Font.BOLD, 20));
         heading.setHorizontalAlignment(SwingConstants.CENTER);
 

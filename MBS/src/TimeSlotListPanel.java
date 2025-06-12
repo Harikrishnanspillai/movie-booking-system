@@ -103,7 +103,8 @@ public class TimeSlotListPanel extends JPanel{
             TimeSlot[] timeSlots = listAllSlots();
             if (timeSlots.length != 0){
                 for (TimeSlot ts : timeSlots) {
-                    JButton timeSlotButton = styledButton("From " + ts.getStartTime() + " to " + ts.getEndTime());
+                    JButton timeSlotButton = styledButton("<html>From " + ts.getStartTime() + "<br>" + " to " + ts.getEndTime()
+                     + "<br>Movie: " + MovieName(ts.getMovieId())+"</html>");
 
                     timeSlotButton.addActionListener(e -> {
                         nextPanel = new AdminTimeSlotPanel(parentPanel, prevPanel, ts.getSlotId(), ts.getStartTime(), ts.getEndTime());

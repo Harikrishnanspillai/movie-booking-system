@@ -14,23 +14,23 @@ public class CustomerTicketsPanel extends JPanel {
         this.prevPanel = prePanel;
 
         setLayout(new BorderLayout(15, 15));
-        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        setBackground(Color.WHITE);
+        setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
+
+        JLabel heading = new JLabel("Booked tickets");
+        heading.setFont(new Font("Sans Serif", Font.BOLD, 20));
+        heading.setHorizontalAlignment(SwingConstants.CENTER);
+
+        JPanel gridPanel = new JPanel(new GridLayout(0, 3, 15, 15));
+        gridPanel.setOpaque(false);
 
         JButton backButton = styledButton("← Back");
-        JPanel ticketGrid = new JPanel(new GridLayout(3, 3, 10, 10));
-        ticketGrid.setOpaque(false);
-
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        buttonPanel.setOpaque(false);
-        buttonPanel.add(backButton);
-
         backButton.addActionListener(e -> {
             parentPanel.removeAll();
             parentPanel.add(prevPanel, BorderLayout.CENTER);
             parentPanel.revalidate();
             parentPanel.repaint();
         });
+
 
         try {
             Ticket[] tickets = listAllTickets(UserPanel.getUser().getUserID());
@@ -39,35 +39,38 @@ public class CustomerTicketsPanel extends JPanel {
                     String[] seats = getSeatNos(ticket.getSeats());
                     String[] snacks = getSnackNames(ticket.getSnacks());
 
-                    JButton ticketButton = new JButton("<html>Booking Id: " + ticket.getBookingId() +
+                    JLabel ticketLabel = new JLabel("<html>Booking Id: " + ticket.getBookingId() +
                             "<br>Booking time: " + ticket.getBookingTime() +
                             "<br>Movie Name: " + ticket.getMovieTitle() +
                             "<br>Seats: " + arrToStr(seats) +
                             "<br>Snacks: " + arrToStr(snacks) +
                             "<br>Price: ₹" + ticket.getTotalCost() + "</html>");
-                    ticketButton.setFont(new Font("SansSerif", Font.PLAIN, 14));
-                    ticketButton.setEnabled(false);
-                    ticketButton.setOpaque(true);
-                    ticketButton.setBackground(Color.BLUE);
-                    ticketButton.setForeground(Color.BLACK);
-                    ticketButton.setHorizontalAlignment(SwingConstants.LEFT);
-                    ticketGrid.add(ticketButton);
+                    ticketLabel.setFont(new Font("Sans Serif", Font.PLAIN, 12));
+                    ticketLabel.setOpaque(true);
+                    ticketLabel.setBackground(new Color(165, 206, 242));
+                    ticketLabel.setForeground(Color.BLACK);
+                    ticketLabel.setHorizontalAlignment(SwingConstants.CENTER);
+                    gridPanel.add(ticketLabel);
                 }
             } else {
                 JLabel msg = new JLabel("Nothing to see here");
-                msg.setFont(new Font("Courier", Font.BOLD, 16));
+                msg.setFont(new Font("Courier New", Font.BOLD, 16));
                 msg.setHorizontalAlignment(SwingConstants.CENTER);
-                ticketGrid.add(new JLabel());
-                ticketGrid.add(msg);
-                ticketGrid.add(new JLabel());
+                gridPanel.add(new JLabel());
+                gridPanel.add(msg);
+                gridPanel.add(new JLabel());
             }
-
-            add(ticketGrid, BorderLayout.CENTER);
-            add(buttonPanel, BorderLayout.SOUTH);
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Some Error has occurred, Please try again", "SQLError", JOptionPane.ERROR_MESSAGE);
         }
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        bottomPanel.setOpaque(false);
+        bottomPanel.add(backButton);
+
+        add(heading, BorderLayout.NORTH);
+        add(gridPanel, BorderLayout.CENTER);
+        add(bottomPanel, BorderLayout.SOUTH);
     }
 
     private JButton styledButton(String text) {

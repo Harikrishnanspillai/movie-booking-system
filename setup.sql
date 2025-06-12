@@ -46,6 +46,7 @@ CREATE TABLE Bookings (
     booking_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     num_tickets INT NOT NULL,
     total_cost DECIMAL(10,2) NOT NULL,
+    payment_method VARCHAR(100),
     FOREIGN KEY (customer_id) REFERENCES Users(user_id)
 );
 
@@ -53,8 +54,7 @@ CREATE TABLE BookingSeats (
     booking_id INT NOT NULL,
     seat_id INT NOT NULL,
     PRIMARY KEY (booking_id, seat_id),
-    FOREIGN KEY (booking_id) REFERENCES Bookings(booking_id),
-    FOREIGN KEY (seat_id) REFERENCES Seats(seat_id)
+    FOREIGN KEY (booking_id) REFERENCES Bookings(booking_id)
 );
 
 CREATE TABLE BookingSnacks (
@@ -62,8 +62,7 @@ CREATE TABLE BookingSnacks (
     snack_id INT NOT NULL,
     quantity INT NOT NULL,
     PRIMARY KEY (booking_id, snack_id),
-    FOREIGN KEY (booking_id) REFERENCES Bookings(booking_id),
-    FOREIGN KEY (snack_id) REFERENCES Snacks(snack_id)
+    FOREIGN KEY (booking_id) REFERENCES Bookings(booking_id)
 );
 
 

@@ -11,7 +11,7 @@ public class CustomerTimeSlotPanel extends JPanel{
     private JPanel nextPanel;
     
 
-    public CustomerTimeSlotPanel(JPanel parent, JPanel prePanel, int newMovieId) {
+    public CustomerTimeSlotPanel(JPanel parent, JPanel prePanel, int MovieId) {
         this.parentPanel = parent;
         this.prevPanel = prePanel;
 
@@ -25,7 +25,7 @@ public class CustomerTimeSlotPanel extends JPanel{
         JPanel gridPanel = new JPanel(new GridLayout(0, 3, 15, 15));
         gridPanel.setOpaque(false);
 
-        JButton backButton = styledButton("← Back");
+        JButton backButton = styledButton("Cancel");
         backButton.setVerticalAlignment(SwingConstants.CENTER);
         backButton.setHorizontalAlignment(SwingConstants.CENTER);
         backButton.addActionListener(e -> {
@@ -36,7 +36,7 @@ public class CustomerTimeSlotPanel extends JPanel{
         });
 
         try {
-            TimeSlot[] timeSlots = listAllSlots();
+            TimeSlot[] timeSlots = findSlots(MovieId);
             if (timeSlots.length != 0) {
                 for (TimeSlot ts : timeSlots) {
                     JButton slotButton = styledButton("From " + ts.getStartTime() + "<br>To " + ts.getEndTime() + "<br>Price: ₹" + ts.getPrice());
@@ -83,32 +83,6 @@ public class CustomerTimeSlotPanel extends JPanel{
         button.setBorder(BorderFactory.createEmptyBorder(6, 15, 6, 15));
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
         return button;
-    }
-
-    public TimeSlot[] listAllSlots() {
-        String sql = "SELECT * FROM TimeSlots";
-        List<TimeSlot> timeSlots = new ArrayList<>();
-        try (Connection conn = DBC.Connect();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) {
-                int slotId = rs.getInt("slot_id");
-                int movieID = rs.getInt("movie_id");
-                String start = rs.getString("start_time");
-                String end = rs.getString("end_time");
-                double price = rs.getDouble("price");
-
-                TimeSlot ts = new TimeSlot(slotId, movieID, start, end, price);
-                timeSlots.add(ts);
-            }
-
-            return timeSlots.toArray(new TimeSlot[0]);
-
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Some Error has occurred, Please try again", "SQLError", JOptionPane.ERROR_MESSAGE);
-        }
-        return null;
     }
 
     public TimeSlot[] findSlots(int movieId) {

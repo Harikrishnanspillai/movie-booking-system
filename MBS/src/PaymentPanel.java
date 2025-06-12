@@ -1,5 +1,7 @@
 import java.awt.*;
 import java.sql.*;
+import java.util.List;
+import java.util.ArrayList;
 import javax.swing.*;
 
 public class PaymentPanel extends JPanel {
@@ -10,17 +12,32 @@ public class PaymentPanel extends JPanel {
     public PaymentPanel(JPanel parent, JPanel prePanel, Integer[] seatIds) {
         this.parentPanel = parent;
         this.prevPanel = prePanel;
-        setLayout(new GridLayout(0,1,10,10));
+        setLayout(new GridLayout(0, 1, 20, 20));
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         setBackground(Color.WHITE);
 
-        JPanel buttonPanel = new JPanel(new FlowLayout());
-        buttonPanel.setBackground(Color.WHITE);
+        JPanel paymentPanel = new JPanel(new FlowLayout());
+        paymentPanel.setBackground(Color.WHITE);
 
+        JPanel msgPanel = new JPanel(new FlowLayout());
+        
+        JLabel msg = new JLabel("<html>Number of tickets:" + seatIds.length + "<br>Cost: "+ seatPrice(seatIds[0])*seatIds.length+ "</html>");
+        JLabel paymentLabel = new JLabel("Enter payment details (UPI ID/Credit Card number):");
+        paymentLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        JTextField paymentField = new JTextField(20);
+        msg.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        msg.setHorizontalAlignment(SwingConstants.CENTER);
+        msg.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0));
+
+        msgPanel.add(msg);
+        paymentPanel.add(paymentLabel);
+        paymentPanel.add(paymentField);
+
+        JButton backButton = styledButton("Cancel");
         JButton confirmButton = styledButton("Confirm");
 
         confirmButton.addActionListener(e -> {
-            int bookingID = bookTickets(UserPanel.getUser().getUserID(), seatIds);
+            int bookingID = bookTickets(UserPanel.getUser().getUserID(), seatIds, paymentField.getText());
             JOptionPane.showMessageDialog(null, "Booking Successful! Booking ID: " + bookingID, "Booking", JOptionPane.INFORMATION_MESSAGE);
 
             parentPanel.removeAll();
@@ -28,8 +45,17 @@ public class PaymentPanel extends JPanel {
             parentPanel.revalidate();
             parentPanel.repaint();
         });
+        backButton.addActionListener(e -> {
+            parentPanel.removeAll();
+            parentPanel.add(prevPanel, BorderLayout.CENTER);
+            parentPanel.revalidate();
+            parentPanel.repaint();
+        });
 
-        add(new JLabel("Enter payment details"));
+        add(msgPanel);
+        add(paymentPanel);
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        buttonPanel.add(backButton);
         buttonPanel.add(confirmButton);
         add(buttonPanel);
     }
@@ -37,24 +63,33 @@ public class PaymentPanel extends JPanel {
     public PaymentPanel(JPanel parent, JPanel prePanel, Integer[] seatIds, Integer[] snackIds) {
         this.parentPanel = parent;
         this.prevPanel = prePanel;
-        setLayout(new GridLayout(0,1,10,10));
+        
+        setLayout(new GridLayout(0, 1, 20, 20));
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         setBackground(Color.WHITE);
 
         JPanel paymentPanel = new JPanel(new FlowLayout());
         paymentPanel.setBackground(Color.WHITE);
 
+        JPanel msgPanel = new JPanel(new FlowLayout());
+        
+        JLabel msg = new JLabel("<html>Number of tickets:" + seatIds.length + "<br>Cost: "+ (seatPrice(seatIds[0])*seatIds.length+getSnackPrice(countOccurrences(snackIds)))+ "</html>");
         JLabel paymentLabel = new JLabel("Enter payment details (UPI ID/Credit Card number):");
         paymentLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
         JTextField paymentField = new JTextField(20);
+        msg.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        msg.setHorizontalAlignment(SwingConstants.CENTER);
+        msg.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0));
 
+        msgPanel.add(msg);
         paymentPanel.add(paymentLabel);
         paymentPanel.add(paymentField);
 
+        JButton backButton = styledButton("Cancel");
         JButton confirmButton = styledButton("Confirm");
 
         confirmButton.addActionListener(e -> {
-            int bookingID = bookTickets(UserPanel.getUser().getUserID(), seatIds, snackIds);
+            int bookingID = bookTickets(UserPanel.getUser().getUserID(), seatIds, snackIds, paymentField.getText());
             JOptionPane.showMessageDialog(null, "Booking Successful! Booking ID: " + bookingID, "Booking", JOptionPane.INFORMATION_MESSAGE);
 
             parentPanel.removeAll();
@@ -62,10 +97,17 @@ public class PaymentPanel extends JPanel {
             parentPanel.revalidate();
             parentPanel.repaint();
         });
+        backButton.addActionListener(e -> {
+            parentPanel.removeAll();
+            parentPanel.add(prevPanel, BorderLayout.CENTER);
+            parentPanel.revalidate();
+            parentPanel.repaint();
+        });
 
+        add(msgPanel);
         add(paymentPanel);
         JPanel buttonPanel = new JPanel(new FlowLayout());
-        buttonPanel.setBackground(Color.WHITE);
+        buttonPanel.add(backButton);
         buttonPanel.add(confirmButton);
         add(buttonPanel);
     }
@@ -121,11 +163,11 @@ public class PaymentPanel extends JPanel {
             JOptionPane.showMessageDialog(null, "Some error has occurred", "SQL Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    public int bookTickets(int userId,Integer[] seatIds){
+    public int bookTickets(int userId,Integer[] seatIds, String upi){
         int slotId = 0;
         double price = 0;
         int num_tickets = seatIds.length;
-        String sql = "INSERT INTO Bookings (customer_id, slot_id, num_tickets, total_cost) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO Bookings (customer_id, slot_id, num_tickets, total_cost, payment_method) VALUES (?, ?, ?, ?, ?)";
         String costsql = "SELECT price FROM TimeSlots WHERE slot_id = ?";
         String slotsql = "SELECT slot_id FROM Seats WHERE seat_id = ?";
         try(Connection conn = DBC.Connect()){
@@ -150,6 +192,7 @@ public class PaymentPanel extends JPanel {
             stmt.setInt(2,slotId);
             stmt.setInt(3, num_tickets);
             stmt.setDouble(4, price*num_tickets);
+            stmt.setString(5, upi);
 
             int rowsAffected = stmt.executeUpdate();
                 if (rowsAffected > 0) {
@@ -169,15 +212,15 @@ public class PaymentPanel extends JPanel {
 
         return 0;
     }
-    public int bookTickets(int userId,Integer[] seatIds, Integer[] snackIds){
+    public int bookTickets(int userId,Integer[] seatIds, Integer[] snackIds, String upi){
         int slotId = 0;
         double ticketPrice = 0;
         int num_tickets=seatIds.length;
-        String sql = "INSERT INTO Bookings (customer_id, slot_id, num_tickets, total_cost) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO Bookings (customer_id, slot_id, num_tickets, total_cost, payment_method) VALUES (?, ?, ?, ?, ?)";
         String costsql = "SELECT price FROM TimeSlots WHERE slot_id = ?";
         String slotsql = "SELECT slot_id FROM Seats WHERE seat_id = ?";
 
-
+        double snackCost = getSnackPrice(countOccurrences(snackIds));
         try(Connection conn = DBC.Connect()){
         PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         PreparedStatement costStmt = conn.prepareStatement(costsql);
@@ -199,7 +242,8 @@ public class PaymentPanel extends JPanel {
             stmt.setInt(1, userId);
             stmt.setInt(2,slotId);
             stmt.setInt(3, num_tickets);
-            stmt.setDouble(4, ticketPrice*num_tickets);
+            stmt.setDouble(4, ticketPrice*num_tickets+snackCost);
+            stmt.setString(5, upi);
 
             int rowsAffected = stmt.executeUpdate();
                 if (rowsAffected > 0) {
@@ -221,5 +265,77 @@ public class PaymentPanel extends JPanel {
         }
 
         return 0;
+    }
+    
+    public int[][] countOccurrences(Integer[] arr) {
+        List<int[]> resultList = new ArrayList<>();
+
+        for (int i = 0; i < arr.length; i++) {
+            int current = arr[i];
+            System.out.println(current);
+            boolean found = false;
+
+            for (int j = 0; j < resultList.size(); j++) {
+                if (resultList.get(j)[0] == current) {
+                    resultList.get(j)[1]++;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                resultList.add(new int[]{current, 1});
+            }
+        }
+        int[][] result = new int[resultList.size()][2];
+        for (int i = 0; i < resultList.size(); i++) {
+            result[i] = resultList.get(i);
+        }
+        
+        for (int[] pair : result) {
+            System.out.println(pair[0] + " " + pair[1]);}
+        return result;
+    }
+
+    public double getSnackPrice(int[][] SnackData){
+        String sql = "SELECT price FROM Snacks WHERE snack_id = ?";
+        double total = 0;
+        try(Connection conn = DBC.Connect(); PreparedStatement stmt = conn.prepareStatement(sql)){
+            for (int[] i : SnackData){
+                stmt.setInt(1, i[0]);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()){
+                    double cost = rs.getDouble(1);
+                    System.out.println(cost);
+                    total += (cost*i[1]);
+                }
+            }
+        }
+        catch (SQLException err){
+            JOptionPane.showMessageDialog(null, "Some Error has occured, Please try again", "SQLError", JOptionPane.ERROR_MESSAGE);
+        }
+        return total;
+    }
+    public double seatPrice(int seatId){
+        int slotId = 0;
+        double price = 0;
+        String slotsql = "SELECT slot_id FROM Seats WHERE seat_id = ?";
+        String costsql = "SELECT price FROM TimeSlots WHERE slot_id = ?";
+        try(Connection conn = DBC.Connect()){
+            PreparedStatement costStmt = conn.prepareStatement(costsql);
+            PreparedStatement slotStmt = conn.prepareStatement(slotsql);
+            slotStmt.setInt(1, seatId);
+            ResultSet rs = slotStmt.executeQuery();
+            if(rs.next()){
+                slotId = rs.getInt(1);
+            }
+            costStmt.setInt(1, slotId);
+            rs = costStmt.executeQuery();
+            if(rs.next()){
+                price = rs.getDouble(1);
+            }
+        }
+        catch (SQLException err){
+        }
+        return price;
     }
 }
