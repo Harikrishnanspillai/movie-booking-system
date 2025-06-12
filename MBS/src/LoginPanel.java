@@ -58,13 +58,13 @@ class LoginPanel extends JPanel {
             try {
                 User u = login(emailField.getText(), new String(passwordField.getPassword()));
                 UserPanel.setUser(u);
-                if ("Admin".equals(u.getClass().getName())) {
+                if (u instanceof Admin) {
                     nextPanel = new AdminPanel(u, parentPanel, new UserPanel(parentPanel));
                     parentPanel.removeAll();
                     parentPanel.add(nextPanel, BorderLayout.CENTER);
                     parentPanel.revalidate();
                     parentPanel.repaint();
-                } else if ("Customer".equals(u.getClass().getName())) {
+                } else if (u instanceof Customer) {
                     nextPanel = new CustomerPanel(u, parentPanel, new UserPanel(parentPanel));
                     parentPanel.removeAll();
                     parentPanel.add(nextPanel, BorderLayout.CENTER);

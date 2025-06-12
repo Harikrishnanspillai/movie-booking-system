@@ -5,6 +5,7 @@ import javax.swing.*;
 public class App {
     public static void main(String[] args) {
         JFrame frame = new JFrame("MBS");
+        frame.setLayout(new BorderLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JLabel title = new JLabel("Movie Ticket Booking System");
         title.setFont(new Font("Papyrus", Font.BOLD | Font.ITALIC, 22));

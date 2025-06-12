@@ -14,7 +14,7 @@ public class CustomerPanel extends JPanel {
         setBackground(Color.WHITE);
 
         JLabel welcome = new JLabel(String.format("Welcome, %s", u.getName()));
-        welcome.setFont(new Font("SansSerif", Font.ITALIC, 18));
+        welcome.setFont(new Font("Sans Serif", Font.ITALIC, 18));
         welcome.setHorizontalAlignment(SwingConstants.CENTER);
         welcome.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 0));
 

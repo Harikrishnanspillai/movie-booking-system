@@ -27,7 +27,7 @@ public class UserPanel extends JPanel {
         add(signUpButton, gbc);
 
         loginButton.addActionListener(e -> {
-            LoginPanel loginPanel = new LoginPanel(parentPanel, UserPanel.this);
+            LoginPanel loginPanel = new LoginPanel(parentPanel, this);
             parentPanel.removeAll();
             parentPanel.add(loginPanel, BorderLayout.CENTER);
             parentPanel.revalidate();
@@ -35,7 +35,7 @@ public class UserPanel extends JPanel {
         });
 
         signUpButton.addActionListener(e -> {
-            SignUpPanel signUpPanel = new SignUpPanel(parentPanel, UserPanel.this);
+            SignUpPanel signUpPanel = new SignUpPanel(parentPanel, this);
             parentPanel.removeAll();
             parentPanel.add(signUpPanel, BorderLayout.CENTER);
             parentPanel.revalidate();
