@@ -1,5 +1,6 @@
 public class Snack {
-    private int id, quantity;
+    private int id;
+    private int quantity;
     String name;
     double price;
 

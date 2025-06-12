@@ -5,10 +5,12 @@ import javax.swing.*;
 public class AdminSnackPanel extends JPanel {
     private JPanel parentPanel;
     private JPanel prevPanel;
-    public AdminSnackPanel(JPanel parent, JPanel prePanel) {
+public AdminSnackPanel(JPanel parent, JPanel prePanel) {
         this.parentPanel = parent;
         this.prevPanel = prePanel;
         setLayout(new GridLayout(4, 2, 10, 10));
+        setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        setBackground(Color.WHITE);
 
         JLabel nameLabel = new JLabel("Name:");
         JTextField nameField = new JTextField(20);
@@ -19,17 +21,17 @@ public class AdminSnackPanel extends JPanel {
         JLabel quantityLabel = new JLabel("Quantity:");
         JTextField quantityField = new JTextField(20);
 
-        JButton backButton = new JButton("Back");
-        JButton submitButton = new JButton("Submit");
+        JButton backButton = styledButton("Back");
+        JButton submitButton = styledButton("Submit");
 
-        submitButton.addActionListener((e) ->{
+        submitButton.addActionListener(e -> {
             addSnack(nameField.getText(), Double.parseDouble(priceField.getText().trim()), Integer.parseInt(quantityField.getText().trim()));
             parentPanel.removeAll();
             parentPanel.add(prevPanel, BorderLayout.CENTER);
             parentPanel.revalidate();
             parentPanel.repaint();
         });
-        
+
         backButton.addActionListener(e -> {
             parentPanel.removeAll();
             parentPanel.add(prevPanel, BorderLayout.CENTER);
@@ -39,20 +41,20 @@ public class AdminSnackPanel extends JPanel {
 
         add(nameLabel);
         add(nameField);
-
         add(priceLabel);
         add(priceField);
-
         add(quantityLabel);
         add(quantityField);
-
         add(backButton);
         add(submitButton);
     }
+
     public AdminSnackPanel(JPanel parent, JPanel prePanel, int snackID, String newName, double newPrice, int newQuantity) {
         this.parentPanel = parent;
         this.prevPanel = prePanel;
         setLayout(new GridLayout(4, 2, 10, 10));
+        setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        setBackground(Color.WHITE);
 
         JLabel nameLabel = new JLabel("Name:");
         JTextField nameField = new JTextField(newName, 20);
@@ -63,17 +65,17 @@ public class AdminSnackPanel extends JPanel {
         JLabel quantityLabel = new JLabel("Quantity:");
         JTextField quantityField = new JTextField(String.valueOf(newQuantity), 20);
 
-        JButton backButton = new JButton("Back");
-        JButton submitButton = new JButton("Submit");
+        JButton backButton = styledButton("Back");
+        JButton submitButton = styledButton("Submit");
 
-        submitButton.addActionListener((e) ->{
+        submitButton.addActionListener(e -> {
             editSnack(snackID, nameField.getText(), Double.parseDouble(priceField.getText().trim()), Integer.parseInt(quantityField.getText().trim()));
             parentPanel.removeAll();
             parentPanel.add(prevPanel, BorderLayout.CENTER);
             parentPanel.revalidate();
             parentPanel.repaint();
         });
-        
+
         backButton.addActionListener(e -> {
             parentPanel.removeAll();
             parentPanel.add(prevPanel, BorderLayout.CENTER);
@@ -83,35 +85,35 @@ public class AdminSnackPanel extends JPanel {
 
         add(nameLabel);
         add(nameField);
-
         add(priceLabel);
         add(priceField);
-
         add(quantityLabel);
         add(quantityField);
-
         add(backButton);
         add(submitButton);
     }
-    public AdminSnackPanel(JPanel parent, JPanel prePanel ,int snackID, String snackName) {
+
+    public AdminSnackPanel(JPanel parent, JPanel prePanel, int snackID, String snackName) {
         this.parentPanel = parent;
         this.prevPanel = prePanel;
-        setLayout(new FlowLayout());
+        setLayout(new FlowLayout(FlowLayout.CENTER));
+        setBackground(Color.WHITE);
+        setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-        JLabel ConfirmLabel = new JLabel(("Are you sure want to delete, " + snackName));
-        ConfirmLabel.setFont(new Font("Courier New", Font.BOLD, 18));
+        JLabel confirmLabel = new JLabel("Are you sure you want to delete, " + snackName + "?");
+        confirmLabel.setFont(new Font("Courier", Font.BOLD, 16));
 
-        JButton backButton = new JButton("Back");
-        JButton submitButton = new JButton("Confirm");
+        JButton backButton = styledButton("Back");
+        JButton confirmButton = styledButton("Confirm");
 
-        submitButton.addActionListener((e) ->{
+        confirmButton.addActionListener(e -> {
             removeSnack(snackID);
             parentPanel.removeAll();
             parentPanel.add(prevPanel, BorderLayout.CENTER);
             parentPanel.revalidate();
             parentPanel.repaint();
         });
-        
+
         backButton.addActionListener(e -> {
             parentPanel.removeAll();
             parentPanel.add(prevPanel, BorderLayout.CENTER);
@@ -119,10 +121,22 @@ public class AdminSnackPanel extends JPanel {
             parentPanel.repaint();
         });
 
-        add(ConfirmLabel);
+        add(confirmLabel);
+        add(Box.createRigidArea(new Dimension(20, 0)));
         add(backButton);
-        add(submitButton);
+        add(confirmButton);
     }
+
+    private JButton styledButton(String text) {
+        JButton button = new JButton(text);
+        button.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        button.setFocusPainted(false);
+        button.setBackground(Color.LIGHT_GRAY);
+        button.setBorder(BorderFactory.createEmptyBorder(6, 15, 6, 15));
+        return button;
+    }
+
+
 
     public void addSnack(String name, double price, int quantity) {
         String sql = "INSERT INTO Snacks (name, price, quantity) VALUES (?, ?, ?)";

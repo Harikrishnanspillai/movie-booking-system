@@ -9,22 +9,28 @@ public class AdminPanel extends JPanel{
     public AdminPanel(User u, JPanel parent, JPanel prePanel){
         this.parentPanel = parent;
         this.prevPanel = prePanel;
-        setLayout(new GridLayout(0, 1, 5, 5));
-        JLabel welcome = new JLabel(String.format("Welcome, %s", u.getName()));
-        welcome.setFont(new Font("Courier New", Font.ITALIC, 18));
-        welcome.setAlignmentX(Component.CENTER_ALIGNMENT);
-        welcome.setHorizontalAlignment(SwingConstants.CENTER);
+        setLayout(new GridLayout(0, 1, 10, 10));
+        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        setBackground(Color.WHITE);
 
-        JButton addMovie = new JButton("Add Movie");
-        JButton editMovie = new JButton("Edit Movie");
-        JButton removeMovie = new JButton("Remove Movie");
-        JButton addSnack = new JButton("Add Snack");
-        JButton editSnack = new JButton("Edit Snack");
-        JButton removeSnack = new JButton("Remove Snack");
-        JButton addTimeSlot = new JButton("Add Time Slot");
-        JButton editTimeSlot = new JButton("Edit Time Slot");
-        JButton removeTimeSlot = new JButton("Remove Time Slot");
-        JButton backButton = new JButton("Logout");
+        JLabel welcome = new JLabel(String.format("Welcome, %s", u.getName()));
+        welcome.setFont(new Font("SansSerif", Font.ITALIC, 18));
+        welcome.setHorizontalAlignment(SwingConstants.CENTER);
+        welcome.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 0));
+
+        JButton addMovie = styledButton("Add Movie");
+        JButton editMovie = styledButton("Edit Movie");
+        JButton removeMovie = styledButton("Remove Movie");
+
+        JButton addSnack = styledButton("Add Snack");
+        JButton editSnack = styledButton("Edit Snack");
+        JButton removeSnack = styledButton("Remove Snack");
+
+        JButton addTimeSlot = styledButton("Add Time Slot");
+        JButton editTimeSlot = styledButton("Edit Time Slot");
+        JButton removeTimeSlot = styledButton("Remove Time Slot");
+
+        JButton backButton = styledButton("Logout");
 
         backButton.addActionListener(e -> {
             parentPanel.removeAll();
@@ -105,7 +111,6 @@ public class AdminPanel extends JPanel{
             parentPanel.repaint();
         });
 
-
         add(welcome);
         add(addMovie);
         add(editMovie);
@@ -117,7 +122,15 @@ public class AdminPanel extends JPanel{
         add(editTimeSlot);
         add(removeTimeSlot);
         add(backButton);
-        
     }
 
+    private JButton styledButton(String text) {
+        JButton button = new JButton(text);
+        button.setFont(new Font("Arial", Font.PLAIN, 16));
+        button.setFocusPainted(false);
+        button.setBackground(Color.LIGHT_GRAY);
+        button.setBorder(BorderFactory.createEmptyBorder(8, 20, 8, 20));
+        return button;
+    }
 }
+

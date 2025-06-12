@@ -10,6 +10,8 @@ public class AdminMoviePanel extends JPanel {
         this.parentPanel = parent;
         this.prevPanel = prePanel;
         setLayout(new GridLayout(5, 2, 10, 10));
+        setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        setBackground(Color.WHITE);
 
         JLabel titleLabel = new JLabel("Title:");
         JTextField titleField = new JTextField(20);
@@ -23,17 +25,17 @@ public class AdminMoviePanel extends JPanel {
         JLabel languageLabel = new JLabel("Language:");
         JTextField languageField = new JTextField(20);
 
-        JButton backButton = new JButton("Back");
-        JButton submitButton = new JButton("Submit");
+        JButton backButton = styledButton("Back");
+        JButton submitButton = styledButton("Submit");
 
-        submitButton.addActionListener((e) ->{
+        submitButton.addActionListener((e) -> {
             addMovie(titleField.getText(), genreField.getText(), Integer.parseInt(durationField.getText().trim()), languageField.getText());
             parentPanel.removeAll();
             parentPanel.add(prevPanel, BorderLayout.CENTER);
             parentPanel.revalidate();
             parentPanel.repaint();
         });
-        
+
         backButton.addActionListener(e -> {
             parentPanel.removeAll();
             parentPanel.add(prevPanel, BorderLayout.CENTER);
@@ -43,23 +45,22 @@ public class AdminMoviePanel extends JPanel {
 
         add(titleLabel);
         add(titleField);
-
         add(genreLabel);
         add(genreField);
-
         add(durationLabel);
         add(durationField);
-
         add(languageLabel);
         add(languageField);
-
         add(backButton);
         add(submitButton);
     }
+
     public AdminMoviePanel(JPanel parent, JPanel prePanel, int MovieID, String newTitle, String newGenre, int newDuration, String newLanguage) {
         this.parentPanel = parent;
         this.prevPanel = prePanel;
         setLayout(new GridLayout(5, 2, 10, 10));
+        setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        setBackground(Color.WHITE);
 
         JLabel titleLabel = new JLabel("Title:");
         JTextField titleField = new JTextField(newTitle, 20);
@@ -73,17 +74,17 @@ public class AdminMoviePanel extends JPanel {
         JLabel languageLabel = new JLabel("Language:");
         JTextField languageField = new JTextField(newLanguage, 20);
 
-        JButton backButton = new JButton("Back");
-        JButton submitButton = new JButton("Submit");
+        JButton backButton = styledButton("Back");
+        JButton submitButton = styledButton("Submit");
 
-        submitButton.addActionListener((e) ->{
+        submitButton.addActionListener((e) -> {
             editMovie(MovieID, titleField.getText(), genreField.getText(), Integer.parseInt(durationField.getText().trim()), languageField.getText());
             parentPanel.removeAll();
             parentPanel.add(prevPanel, BorderLayout.CENTER);
             parentPanel.revalidate();
             parentPanel.repaint();
         });
-        
+
         backButton.addActionListener(e -> {
             parentPanel.removeAll();
             parentPanel.add(prevPanel, BorderLayout.CENTER);
@@ -93,32 +94,29 @@ public class AdminMoviePanel extends JPanel {
 
         add(titleLabel);
         add(titleField);
-
         add(genreLabel);
         add(genreField);
-
         add(durationLabel);
         add(durationField);
-
         add(languageLabel);
         add(languageField);
-
         add(backButton);
         add(submitButton);
     }
-    public AdminMoviePanel(JPanel parent, JPanel prePanel ,int movieID, String movieTitle) {
+    public AdminMoviePanel(JPanel parent, JPanel prePanel, int movieID, String movieTitle) {
         this.parentPanel = parent;
         this.prevPanel = prePanel;
         setLayout(new FlowLayout(FlowLayout.CENTER));
-
-        JLabel ConfirmLabel = new JLabel(("Are you sure want to delete, " + movieTitle));
-        ConfirmLabel.setFont(new Font("Courier New", Font.BOLD, 18));
-        add(Box.createRigidArea(new Dimension(0, 20)));
-
-        JButton backButton = new JButton("Back");
-        JButton submitButton = new JButton("Confirm");
-
-        submitButton.addActionListener((e) ->{
+        setBackground(Color.WHITE);
+        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        
+        JLabel confirmLabel = new JLabel("Are you sure you want to delete, " + movieTitle + "?");
+        confirmLabel.setFont(new Font("Courier", Font.BOLD, 16));
+        
+        JButton backButton = styledButton("Back");
+        JButton confirmButton = styledButton("Confirm");
+        
+        confirmButton.addActionListener((e) -> {
             removeMovie(movieID);
             parentPanel.removeAll();
             parentPanel.add(prevPanel, BorderLayout.CENTER);
@@ -132,11 +130,22 @@ public class AdminMoviePanel extends JPanel {
             parentPanel.revalidate();
             parentPanel.repaint();
         });
-
-        add(ConfirmLabel);
+        
+        add(confirmLabel);
+        add(Box.createRigidArea(new Dimension(20,0))); // spacing
         add(backButton);
-        add(submitButton);
+        add(confirmButton);
     }
+
+    private JButton styledButton(String text) {
+        JButton button = new JButton(text);
+        button.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        button.setFocusPainted(false);
+        button.setBackground(Color.LIGHT_GRAY);
+        button.setBorder(BorderFactory.createEmptyBorder(6, 15, 6, 15));
+        return button;
+    }
+
 
     public void addMovie(String title, String genre, int duration, String language) {
         String sql = "INSERT INTO Movies (title, genre, duration, lang) VALUES (?, ?, ?, ?)";
@@ -174,14 +183,6 @@ public class AdminMoviePanel extends JPanel {
     }
     public void removeMovie(int movieId){
         String msql = "DELETE FROM Movies WHERE movie_id = ?";
-        String tsql = "DELETE FROM TimeSlots WHERE movie_id = ?";
-
-        try (Connection conn = DBC.Connect(); PreparedStatement stmt = conn.prepareStatement(tsql)) {
-            stmt.setInt(1, movieId);
-            int affectedRows = stmt.executeUpdate();
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Some Error has occured, Please try again", "SQLError", JOptionPane.ERROR_MESSAGE);
-        }
 
         try (Connection conn = DBC.Connect(); PreparedStatement stmt = conn.prepareStatement(msql)) {
             stmt.setInt(1, movieId);

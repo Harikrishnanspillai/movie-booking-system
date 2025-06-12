@@ -6,56 +6,60 @@ public class AdminTimeSlotPanel extends JPanel {
     private JPanel parentPanel;
     private JPanel prevPanel;
     public AdminTimeSlotPanel(JPanel parent, JPanel prePanel) {
-        this.parentPanel = parent;
-        this.prevPanel = prePanel;
-        setLayout(new GridLayout(5, 2, 10, 10));
+    this.parentPanel = parent;
+    this.prevPanel = prePanel;
+    setLayout(new GridLayout(5, 2, 10, 10));
+    setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+    setBackground(Color.WHITE);
 
-        JLabel movieLabel = new JLabel("Movie:");
-        JTextField movieField = new JTextField(20);
+    JLabel movieLabel = new JLabel("Movie:");
+    JTextField movieField = new JTextField(20);
 
-        JLabel startLabel = new JLabel("Start time (YYYY-MM-DD HH:MM:SS):");
-        JTextField startField = new JTextField(20);
+    JLabel startLabel = new JLabel("Start time (YYYY-MM-DD HH:MM:SS):");
+    JTextField startField = new JTextField(20);
 
-        JLabel endLabel = new JLabel("End time (YYYY-MM-DD HH:MM:SS):");
-        JTextField endField = new JTextField(20);
+    JLabel endLabel = new JLabel("End time (YYYY-MM-DD HH:MM:SS):");
+    JTextField endField = new JTextField(20);
 
-        JLabel priceLabel = new JLabel("Price:");
-        JTextField priceField = new JTextField("150", 20);
+    JLabel priceLabel = new JLabel("Price:");
+    JTextField priceField = new JTextField("150", 20);
 
-        JButton backButton = new JButton("Back");
-        JButton submitButton = new JButton("Submit");
+    JButton backButton = styledButton("Back");
+    JButton submitButton = styledButton("Submit");
 
+    submitButton.addActionListener(e -> {
+        addTimeSlot(MovieID(movieField.getText()), startField.getText(), endField.getText(), Double.parseDouble(priceField.getText().trim()));
+        parentPanel.removeAll();
+        parentPanel.add(prevPanel, BorderLayout.CENTER);
+        parentPanel.revalidate();
+        parentPanel.repaint();
+    });
 
-        submitButton.addActionListener((e) ->{
-            addTimeSlot( MovieID(movieField.getText()), startField.getText(), endField.getText(), Double.parseDouble(priceField.getText().trim()));
-            parentPanel.removeAll();
-            parentPanel.add(prevPanel, BorderLayout.CENTER);
-            parentPanel.revalidate();
-            parentPanel.repaint();
-        });
-        
-        backButton.addActionListener(e -> {
-            parentPanel.removeAll();
-            parentPanel.add(prevPanel, BorderLayout.CENTER);
-            parentPanel.revalidate();
-            parentPanel.repaint();
-        });
+    backButton.addActionListener(e -> {
+        parentPanel.removeAll();
+        parentPanel.add(prevPanel, BorderLayout.CENTER);
+        parentPanel.revalidate();
+        parentPanel.repaint();
+    });
 
-        add(movieLabel);
-        add(movieField);
-        add(startLabel);
-        add(startField);
-        add(endLabel);
-        add(endField);
-        add(priceLabel);
-        add(priceField);
-        add(backButton);
-        add(submitButton);
-    }
-    public AdminTimeSlotPanel(JPanel parent, JPanel prePanel, int slotId, int newMovieId, String newStart, String newEnd, double newPrice) {
+    add(movieLabel);
+    add(movieField);
+    add(startLabel);
+    add(startField);
+    add(endLabel);
+    add(endField);
+    add(priceLabel);
+    add(priceField);
+    add(backButton);
+    add(submitButton);
+}
+
+public AdminTimeSlotPanel(JPanel parent, JPanel prePanel, int slotId, int newMovieId, String newStart, String newEnd, double newPrice) {
         this.parentPanel = parent;
         this.prevPanel = prePanel;
         setLayout(new GridLayout(6, 2, 10, 10));
+        setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        setBackground(Color.WHITE);
 
         JLabel movieLabel = new JLabel("Movie:");
         JTextField movieField = new JTextField(MovieName(newMovieId), 20);
@@ -69,17 +73,17 @@ public class AdminTimeSlotPanel extends JPanel {
         JLabel priceLabel = new JLabel("Price:");
         JTextField priceField = new JTextField(String.valueOf(newPrice), 20);
 
-        JButton backButton = new JButton("Back");
-        JButton submitButton = new JButton("Submit");
+        JButton backButton = styledButton("Back");
+        JButton submitButton = styledButton("Submit");
 
-        submitButton.addActionListener((e) ->{
+        submitButton.addActionListener(e -> {
             editTimeSlot(slotId, MovieID(movieField.getText().trim()), startField.getText(), endField.getText(), Double.parseDouble(priceField.getText().trim()));
             parentPanel.removeAll();
             parentPanel.add(prevPanel, BorderLayout.CENTER);
             parentPanel.revalidate();
             parentPanel.repaint();
         });
-        
+
         backButton.addActionListener(e -> {
             parentPanel.removeAll();
             parentPanel.add(prevPanel, BorderLayout.CENTER);
@@ -87,7 +91,6 @@ public class AdminTimeSlotPanel extends JPanel {
             parentPanel.repaint();
         });
 
-        
         add(movieLabel);
         add(movieField);
         add(startLabel);
@@ -96,29 +99,31 @@ public class AdminTimeSlotPanel extends JPanel {
         add(endField);
         add(priceLabel);
         add(priceField);
-
         add(backButton);
         add(submitButton);
     }
-    public AdminTimeSlotPanel(JPanel parent, JPanel prePanel ,int slotID, String start, String end) {
+
+    public AdminTimeSlotPanel(JPanel parent, JPanel prePanel, int slotId, String start, String end) {
         this.parentPanel = parent;
         this.prevPanel = prePanel;
-        setLayout(new FlowLayout());
+        setLayout(new FlowLayout(FlowLayout.CENTER));
+        setBackground(Color.WHITE);
+        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        JLabel ConfirmLabel = new JLabel(("Are you sure want to delete slot from, " + start + " to " + end));
-        ConfirmLabel.setFont(new Font("Courier New", Font.BOLD, 18));
+        JLabel confirmLabel = new JLabel("Are you sure you want to delete slot from " + start + " to " + end + "?");
+        confirmLabel.setFont(new Font("Courier", Font.BOLD, 16));
 
-        JButton backButton = new JButton("Back");
-        JButton submitButton = new JButton("Confirm");
+        JButton backButton = styledButton("Back");
+        JButton confirmButton = styledButton("Confirm");
 
-        submitButton.addActionListener((e) ->{
-            deleteTimeSlot(slotID);
+        confirmButton.addActionListener(e -> {
+            deleteTimeSlot(slotId);
             parentPanel.removeAll();
             parentPanel.add(prevPanel, BorderLayout.CENTER);
             parentPanel.revalidate();
             parentPanel.repaint();
         });
-        
+
         backButton.addActionListener(e -> {
             parentPanel.removeAll();
             parentPanel.add(prevPanel, BorderLayout.CENTER);
@@ -126,9 +131,19 @@ public class AdminTimeSlotPanel extends JPanel {
             parentPanel.repaint();
         });
 
-        add(ConfirmLabel);
+        add(confirmLabel);
+        add(Box.createRigidArea(new Dimension(20, 0)));
         add(backButton);
-        add(submitButton);
+        add(confirmButton);
+    }
+
+    private JButton styledButton(String text) {
+        JButton button = new JButton(text);
+        button.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        button.setFocusPainted(false);
+        button.setBackground(Color.LIGHT_GRAY);
+        button.setBorder(BorderFactory.createEmptyBorder(6, 15, 6, 15));
+        return button;
     }
 
     public void addTimeSlot(int movieId, String start, String end, double price) {

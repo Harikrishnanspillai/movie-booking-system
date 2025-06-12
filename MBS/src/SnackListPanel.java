@@ -17,7 +17,7 @@ public class SnackListPanel extends JPanel {
         setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
 
         JLabel heading = new JLabel("Snack List");
-        heading.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        heading.setFont(new Font("Sans Serif", Font.BOLD, 20));
         heading.setHorizontalAlignment(SwingConstants.CENTER);
 
         JPanel gridPanel = new JPanel(new GridLayout(0, 3, 15, 15));
@@ -45,15 +45,13 @@ public class SnackListPanel extends JPanel {
                     });
                     gridPanel.add(snackButton);
                 }
-
                 int emptySlots = (3 - (snacks.length % 3)) % 3;
                 for (int i = 0; i < emptySlots; i++) {
                     gridPanel.add(new JLabel());
                 }
-
             } else {
                 JLabel msg = new JLabel("Nothing to see here");
-                msg.setFont(new Font("Courier New", Font.BOLD, 20));
+                msg.setFont(new Font("Courier New", Font.BOLD, 16));
                 msg.setHorizontalAlignment(SwingConstants.CENTER);
                 gridPanel.add(new JLabel());
                 gridPanel.add(msg);
@@ -81,7 +79,7 @@ public class SnackListPanel extends JPanel {
         setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
 
         JLabel heading = new JLabel("Snack List");
-        heading.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        heading.setFont(new Font("Sans Serif", Font.BOLD, 20));
         heading.setHorizontalAlignment(SwingConstants.CENTER);
 
         JPanel gridPanel = new JPanel(new GridLayout(0, 3, 15, 15));
@@ -109,15 +107,13 @@ public class SnackListPanel extends JPanel {
                     });
                     gridPanel.add(snackButton);
                 }
-
                 int emptySlots = (3 - (snacks.length % 3)) % 3;
                 for (int i = 0; i < emptySlots; i++) {
                     gridPanel.add(new JLabel());
                 }
-
             } else {
                 JLabel msg = new JLabel("Nothing to see here");
-                msg.setFont(new Font("Courier New", Font.BOLD, 20));
+                msg.setFont(new Font("Courier New", Font.BOLD, 16));
                 msg.setHorizontalAlignment(SwingConstants.CENTER);
                 gridPanel.add(new JLabel());
                 gridPanel.add(msg);
@@ -127,7 +123,6 @@ public class SnackListPanel extends JPanel {
         } catch (Exception err) {
             JOptionPane.showMessageDialog(null, "Some Error has occured, Please try again", "SQLError", JOptionPane.ERROR_MESSAGE);
         }
-
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         bottomPanel.setOpaque(false);
         bottomPanel.add(backButton);
@@ -139,7 +134,7 @@ public class SnackListPanel extends JPanel {
 
     private JButton styledButton(String text) {
         JButton button = new JButton(text);
-        button.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        button.setFont(new Font("Sans Serif", Font.PLAIN, 16));
         button.setFocusPainted(false);
         button.setBackground(new Color(220, 230, 245));
         button.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));

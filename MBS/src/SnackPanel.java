@@ -5,7 +5,6 @@ import javax.swing.*;
 import java.util.List;
 import java.util.ArrayList;
 
-
 public class SnackPanel extends JPanel {
     private JPanel parentPanel;
     private JPanel prevPanel;
@@ -16,10 +15,14 @@ public class SnackPanel extends JPanel {
         this.prevPanel = prePanel;
 
         setLayout(new BorderLayout());
-        JPanel snackGrid = new JPanel(new GridLayout(0, 1, 10, 10)); // 1 column, auto-rows
+        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        setBackground(Color.WHITE);
 
-        JButton backButton = new JButton("Back");
-        JButton confirmButton = new JButton("Confirm");
+        JPanel snackGrid = new JPanel(new GridLayout(0, 1, 10, 10));
+        snackGrid.setBackground(Color.WHITE);
+
+        JButton backButton = styledButton("Back");
+        JButton confirmButton = styledButton("Confirm");
 
         backButton.addActionListener(e -> {
             parentPanel.removeAll();
@@ -35,19 +38,21 @@ public class SnackPanel extends JPanel {
             if (snacks != null && snacks.length != 0) {
                 for (Snack snack : snacks) {
                     JPanel snackPanel = new JPanel(new BorderLayout());
-                    snackPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+                    snackPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
                     snackPanel.setBackground(new Color(245, 245, 245));
 
-                    JLabel infoLabel = new JLabel(
-                        snack.getName() + " - ₹" + snack.getPrice() + " | Stock: " + snack.getQuantity()
-                    );
+                    JLabel infoLabel = new JLabel(snack.getName() + " - ₹" + snack.getPrice() + " | Stock: " + snack.getQuantity());
                     infoLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+                    infoLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
                     snackPanel.add(infoLabel, BorderLayout.NORTH);
 
                     JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-                    JButton minusButton = new JButton("-");
-                    JButton plusButton = new JButton("+");
+                    controlPanel.setBackground(new Color(245, 245, 245));
+
+                    JButton minusButton = styledButton("-");
+                    JButton plusButton = styledButton("+");
                     JLabel qtyLabel = new JLabel("0");
+                    qtyLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
                     final int[] qty = {0};
 
                     plusButton.addActionListener(e -> {
@@ -97,21 +102,29 @@ public class SnackPanel extends JPanel {
                 add(new JScrollPane(snackGrid), BorderLayout.CENTER);
 
                 JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+                buttonPanel.setBackground(Color.WHITE);
                 buttonPanel.add(backButton);
                 buttonPanel.add(confirmButton);
                 add(buttonPanel, BorderLayout.SOUTH);
             } else {
                 JLabel msg = new JLabel("Nothing to see here");
-                msg.setFont(new Font("Courier New", Font.BOLD, 20));
+                msg.setFont(new Font("Courier", Font.BOLD, 16));
                 msg.setHorizontalAlignment(SwingConstants.CENTER);
-                msg.setVerticalAlignment(SwingConstants.CENTER);
                 add(msg, BorderLayout.CENTER);
                 add(backButton, BorderLayout.SOUTH);
             }
-
         } catch (Exception err) {
             JOptionPane.showMessageDialog(null, "Some error has occurred, please try again", "SQLError", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private JButton styledButton(String text) {
+        JButton button = new JButton(text);
+        button.setFont(new Font("Arial", Font.PLAIN, 14));
+        button.setFocusPainted(false);
+        button.setBackground(Color.LIGHT_GRAY);
+        button.setBorder(BorderFactory.createEmptyBorder(6, 15, 6, 15));
+        return button;
     }
 
     public Snack[] listAllSnacks() {
@@ -127,8 +140,7 @@ public class SnackPanel extends JPanel {
                 double price = rs.getDouble("price");
                 int quantity = rs.getInt("quantity");
 
-                Snack snack = new Snack(id, name, price, quantity);
-                snacks.add(snack);
+                snacks.add(new Snack(id, name, price, quantity));
             }
             return snacks.toArray(new Snack[0]);
 

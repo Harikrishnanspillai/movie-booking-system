@@ -7,7 +7,7 @@ public class App {
         JFrame frame = new JFrame("MBS");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JLabel title = new JLabel("Movie Ticket Booking System");
-        title.setFont(new Font("Courier New", Font.BOLD | Font.ITALIC, 22));
+        title.setFont(new Font("Papyrus", Font.BOLD | Font.ITALIC, 22));
         title.setHorizontalAlignment(SwingConstants.CENTER);
         title.setVerticalAlignment(SwingConstants.CENTER);
         JPanel mainPanel = new JPanel(new BorderLayout());

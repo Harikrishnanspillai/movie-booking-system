@@ -2,8 +2,7 @@ import java.awt.*;
 import java.sql.*;
 import javax.swing.*;
 
-
-public class PaymentPanel extends JPanel{
+public class PaymentPanel extends JPanel {
     private JPanel parentPanel;
     private JPanel prevPanel;
     private JPanel nextPanel;
@@ -11,8 +10,14 @@ public class PaymentPanel extends JPanel{
     public PaymentPanel(JPanel parent, JPanel prePanel, Integer[] seatIds) {
         this.parentPanel = parent;
         this.prevPanel = prePanel;
-        JPanel ButtonPanel = new JPanel(new FlowLayout());
-        JButton confirmButton = new JButton("Confirm");
+        setLayout(new GridLayout(0,1,10,10));
+        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        setBackground(Color.WHITE);
+
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        buttonPanel.setBackground(Color.WHITE);
+
+        JButton confirmButton = styledButton("Confirm");
 
         confirmButton.addActionListener(e -> {
             int bookingID = bookTickets(UserPanel.getUser().getUserID(), seatIds);
@@ -22,30 +27,31 @@ public class PaymentPanel extends JPanel{
             parentPanel.add(prevPanel, BorderLayout.CENTER);
             parentPanel.revalidate();
             parentPanel.repaint();
-
         });
 
-        setLayout(new GridLayout(0,1,10,10));
-
         add(new JLabel("Enter payment details"));
-        ButtonPanel.add(confirmButton);
-        add(ButtonPanel);
-                
+        buttonPanel.add(confirmButton);
+        add(buttonPanel);
     }
+
     public PaymentPanel(JPanel parent, JPanel prePanel, Integer[] seatIds, Integer[] snackIds) {
         this.parentPanel = parent;
         this.prevPanel = prePanel;
-        JPanel ButtonPanel = new JPanel(new FlowLayout());
-        JButton confirmButton = new JButton("Confirm");
-
         setLayout(new GridLayout(0,1,10,10));
+        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        setBackground(Color.WHITE);
 
         JPanel paymentPanel = new JPanel(new FlowLayout());
-        JLabel paymentLabel = new JLabel("Enter payment details(UPI ID/Credit Card number):");
+        paymentPanel.setBackground(Color.WHITE);
+
+        JLabel paymentLabel = new JLabel("Enter payment details (UPI ID/Credit Card number):");
+        paymentLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
         JTextField paymentField = new JTextField(20);
 
         paymentPanel.add(paymentLabel);
         paymentPanel.add(paymentField);
+
+        JButton confirmButton = styledButton("Confirm");
 
         confirmButton.addActionListener(e -> {
             int bookingID = bookTickets(UserPanel.getUser().getUserID(), seatIds, snackIds);
@@ -55,12 +61,22 @@ public class PaymentPanel extends JPanel{
             parentPanel.add(prevPanel, BorderLayout.CENTER);
             parentPanel.revalidate();
             parentPanel.repaint();
-
         });
+
         add(paymentPanel);
-        ButtonPanel.add(confirmButton);
-        add(ButtonPanel);
-                
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        buttonPanel.setBackground(Color.WHITE);
+        buttonPanel.add(confirmButton);
+        add(buttonPanel);
+    }
+
+    private JButton styledButton(String text) {
+        JButton button = new JButton(text);
+        button.setFont(new Font("Arial", Font.PLAIN, 14));
+        button.setFocusPainted(false);
+        button.setBackground(Color.LIGHT_GRAY);
+        button.setBorder(BorderFactory.createEmptyBorder(8, 20, 8, 20));
+        return button;
     }
 
     public void bookSeats(int seatId, int bookingId){

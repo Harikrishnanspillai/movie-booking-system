@@ -16,7 +16,16 @@ public class CustomerTimeSlotPanel extends JPanel{
         this.prevPanel = prePanel;
 
         setLayout(new GridLayout(3, 3, 10, 10));
-        JButton backButton = new JButton("Back");
+        setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+
+        JLabel heading = new JLabel("Timeslots");
+        heading.setFont(new Font("Sans Serif", Font.BOLD, 20));
+        heading.setHorizontalAlignment(SwingConstants.CENTER);
+
+        JPanel gridPanel = new JPanel(new GridLayout(0, 3, 15, 15));
+        gridPanel.setOpaque(false);
+
+        JButton backButton = styledButton("← Back");
         backButton.setVerticalAlignment(SwingConstants.CENTER);
         backButton.setHorizontalAlignment(SwingConstants.CENTER);
         backButton.addActionListener(e -> {
@@ -25,51 +34,63 @@ public class CustomerTimeSlotPanel extends JPanel{
             parentPanel.revalidate();
             parentPanel.repaint();
         });
+
         try {
             TimeSlot[] timeSlots = listAllSlots();
-            if (timeSlots.length != 0){
-            for (TimeSlot ts : timeSlots) {
-            JButton slotButton = new JButton(("<html>From " + ts.getStartTime() +
-                                  " to " + ts.getEndTime() +
-                                  "<br>Price: " + ts.getPrice() + "</html>"));
+            if (timeSlots.length != 0) {
+                for (TimeSlot ts : timeSlots) {
+                    JButton slotButton = styledButton("From " + ts.getStartTime() + "<br>To " + ts.getEndTime() + "<br>Price: ₹" + ts.getPrice());
 
-            slotButton.addActionListener(e -> {
-                nextPanel = new SeatPanel(parent, prePanel, ts.getSlotId());
-                parentPanel.removeAll();
-                parentPanel.add(nextPanel, BorderLayout.CENTER);
-                parentPanel.revalidate();
-                parentPanel.repaint();
-            });
+                    slotButton.addActionListener(e -> {
+                        nextPanel = new SeatPanel(parentPanel, prevPanel, ts.getSlotId());
+                        parentPanel.removeAll();
+                        parentPanel.add(nextPanel, BorderLayout.CENTER);
+                        parentPanel.revalidate();
+                        parentPanel.repaint();
+                    });
 
-            add(slotButton);
-        }
-        for (int i = 0; i<(timeSlots.length%3); i++){
-                    add(new JLabel());
+                    gridPanel.add(slotButton);
                 }
-                add(backButton);
-    }
-    else{
+                int emptySlots = (3 - (timeSlots.length % 3)) % 3;
+                for (int i = 0; i < emptySlots; i++) {
+                    gridPanel.add(new JLabel());
+                }
+                
+            } else {
                 JLabel msg = new JLabel("Nothing to see here");
-                msg.setFont(new Font("Courier New", Font.BOLD, 20));
+                msg.setFont(new Font("Courier", Font.BOLD, 16));
                 msg.setHorizontalAlignment(SwingConstants.CENTER);
-                msg.setVerticalAlignment(SwingConstants.CENTER);
                 add(msg);
-                add(backButton, BorderLayout.CENTER);
+                add(backButton);
             }
-        } catch (Exception err) {
-            JOptionPane.showMessageDialog(null, "Some Error has occured, Please try again", "SQLError", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Some Error has occurred, Please try again", "SQLError", JOptionPane.ERROR_MESSAGE);
         }
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        bottomPanel.setOpaque(false);
+        bottomPanel.add(backButton);
 
-        
+        add(heading, BorderLayout.NORTH);
+        add(gridPanel, BorderLayout.CENTER);
+        add(bottomPanel, BorderLayout.SOUTH);
+    }
 
+    private JButton styledButton(String text) {
+        JButton button = new JButton("<html>" + text + "</html>");
+        button.setFont(new Font("Arial", Font.PLAIN, 14));
+        button.setFocusPainted(false);
+        button.setBackground(Color.LIGHT_GRAY);
+        button.setBorder(BorderFactory.createEmptyBorder(6, 15, 6, 15));
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        return button;
     }
 
     public TimeSlot[] listAllSlots() {
         String sql = "SELECT * FROM TimeSlots";
         List<TimeSlot> timeSlots = new ArrayList<>();
-        try (Connection conn = DBC.Connect(); 
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            ResultSet rs = stmt.executeQuery()) {
+        try (Connection conn = DBC.Connect();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 int slotId = rs.getInt("slot_id");
@@ -81,11 +102,11 @@ public class CustomerTimeSlotPanel extends JPanel{
                 TimeSlot ts = new TimeSlot(slotId, movieID, start, end, price);
                 timeSlots.add(ts);
             }
-            
+
             return timeSlots.toArray(new TimeSlot[0]);
 
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Some Error has occured, Please try again", "SQLError", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Some Error has occurred, Please try again", "SQLError", JOptionPane.ERROR_MESSAGE);
         }
         return null;
     }

@@ -12,8 +12,17 @@ public class MovieListPanel extends JPanel{
         this.parentPanel = parent;
         this.prevPanel = prePanel;
 
-        setLayout(new GridLayout(3, 3, 10, 10));
-        JButton backButton = new JButton("Back");
+        setLayout(new BorderLayout(15, 15));
+        setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
+
+        JLabel heading = new JLabel("Movie List");
+        heading.setFont(new Font("Sans Serif", Font.BOLD, 20));
+        heading.setHorizontalAlignment(SwingConstants.CENTER);
+
+        JPanel gridPanel = new JPanel(new GridLayout(0, 3, 15, 15));
+        gridPanel.setOpaque(false);
+
+        JButton backButton = styledButton("← Back");
         backButton.setVerticalAlignment(SwingConstants.CENTER);
         backButton.setHorizontalAlignment(SwingConstants.CENTER);
         backButton.addActionListener(e -> {
@@ -22,44 +31,62 @@ public class MovieListPanel extends JPanel{
             parentPanel.revalidate();
             parentPanel.repaint();
         });
+
         try {
             Movie[] movies = listAllMovies();
-            if (movies.length != 0){
+            if (movies != null && movies.length != 0) {
                 for (Movie movie : movies) {
-                JButton movieButton = new JButton(movie.getTitle());
+                    JButton movieButton = styledButton(movie.getTitle());
 
-                movieButton.addActionListener(e -> {
-                    nextPanel = new AdminMoviePanel(parent, prePanel, movie.getId(), movie.getTitle(), movie.getGenre(), movie.getDuration(), movie.getLanguage());
-                    parentPanel.removeAll();
-                    parentPanel.add(nextPanel, BorderLayout.CENTER);
-                    parentPanel.revalidate();
-                    parentPanel.repaint();
-                });
-
-                add(movieButton);
+                    movieButton.addActionListener(e -> {
+                        nextPanel = new AdminMoviePanel(parentPanel, prevPanel, movie.getId(), movie.getTitle(), movie.getGenre(), movie.getDuration(), movie.getLanguage());
+                        parentPanel.removeAll();
+                        parentPanel.add(nextPanel, BorderLayout.CENTER);
+                        parentPanel.revalidate();
+                        parentPanel.repaint();
+                    });
+                    gridPanel.add(movieButton);
                 }
-                add(backButton);
-            }
-            else{
+                int emptySlots = (3 - (movies.length % 3)) % 3;
+                for (int i = 0; i < emptySlots; i++) {
+                    gridPanel.add(new JLabel());
+                }
+            } else {
                 JLabel msg = new JLabel("Nothing to see here");
-                msg.setFont(new Font("Courier New", Font.BOLD, 20));
+                msg.setFont(new Font("Courier", Font.BOLD, 16));
                 msg.setHorizontalAlignment(SwingConstants.CENTER);
-                msg.setVerticalAlignment(SwingConstants.CENTER);
-                add(msg);
-                add(backButton);
+                gridPanel.add(new JLabel());
+                gridPanel.add(msg);
+                gridPanel.add(new JLabel());
             }
-        } catch (Exception err) {
-            JOptionPane.showMessageDialog(null, "Some Error has occured, Please try again", "SQLError", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Some Error has occurred, Please try again", "SQLError", JOptionPane.ERROR_MESSAGE);
         }
 
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        bottomPanel.setOpaque(false);
+        bottomPanel.add(backButton);
+
+        add(heading, BorderLayout.NORTH);
+        add(gridPanel, BorderLayout.CENTER);
+        add(bottomPanel, BorderLayout.SOUTH);
     }
 
-    public MovieListPanel(JPanel parent, JPanel prePanel, boolean b) {
+    public MovieListPanel(JPanel parent, JPanel prePanel, boolean isRemoveMode) {
         this.parentPanel = parent;
         this.prevPanel = prePanel;
 
-        setLayout(new GridLayout(3, 3, 10, 10));
-        JButton backButton = new JButton("Back");
+        setLayout(new BorderLayout(15, 15));
+        setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
+
+        JLabel heading = new JLabel("Movie List");
+        heading.setFont(new Font("Sans Serif", Font.BOLD, 20));
+        heading.setHorizontalAlignment(SwingConstants.CENTER);
+
+        JPanel gridPanel = new JPanel(new GridLayout(0, 3, 15, 15));
+        gridPanel.setOpaque(false);
+
+        JButton backButton = styledButton("← Back");
         backButton.setVerticalAlignment(SwingConstants.CENTER);
         backButton.setHorizontalAlignment(SwingConstants.CENTER);
         backButton.addActionListener(e -> {
@@ -71,47 +98,58 @@ public class MovieListPanel extends JPanel{
 
         try {
             Movie[] movies = listAllMovies();
-            if (movies.length != 0){
+            if (movies != null && movies.length != 0) {
                 for (Movie movie : movies) {
-                JButton movieButton = new JButton(movie.getTitle());
+                    JButton movieButton = styledButton(movie.getTitle());
 
-                movieButton.addActionListener(e -> {
-                    nextPanel = new AdminMoviePanel(parent, prePanel, movie.getId(), movie.getTitle());
-                    parentPanel.removeAll();
-                    parentPanel.add(nextPanel, BorderLayout.CENTER);
-                    parentPanel.revalidate();
-                    parentPanel.repaint();
-                });
+                    movieButton.addActionListener(e -> {
+                        nextPanel = new AdminMoviePanel(parentPanel, prevPanel, movie.getId(), movie.getTitle());
+                        parentPanel.removeAll();
+                        parentPanel.add(nextPanel, BorderLayout.CENTER);
+                        parentPanel.revalidate();
+                        parentPanel.repaint();
+                    });
 
-                add(movieButton);
+                    gridPanel.add(movieButton);
                 }
-                for (int i = 0; i>=(movies.length%3); i++){
-                    add(new JLabel());
+                int emptySlots = (3 - (movies.length % 3)) % 3;
+                for (int i = 0; i < emptySlots; i++) {
+                    gridPanel.add(new JLabel());
                 }
-                add(backButton);
-            }
-            else {
+            } else {
                 JLabel msg = new JLabel("Nothing to see here");
-                msg.setFont(new Font("Courier New", Font.BOLD, 20));
+                msg.setFont(new Font("Courier New", Font.BOLD, 16));
                 msg.setHorizontalAlignment(SwingConstants.CENTER);
-                msg.setVerticalAlignment(SwingConstants.CENTER);
-                add(new JLabel());
-                add(msg);
-                add(new JLabel());
-                add(new JLabel());
-                add(backButton);
-                add(new JLabel());
+                gridPanel.add(new JLabel());
+                gridPanel.add(msg);
+                gridPanel.add(new JLabel());
             }
-        } catch (Exception err) {
-            JOptionPane.showMessageDialog(null, "Some Error has occured, Please try again", "SQLError", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Some Error has occurred, Please try again", "SQLError", JOptionPane.ERROR_MESSAGE);
         }
 
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        bottomPanel.setOpaque(false);
+        bottomPanel.add(backButton);
+
+        add(heading, BorderLayout.NORTH);
+        add(gridPanel, BorderLayout.CENTER);
+        add(bottomPanel, BorderLayout.SOUTH);
     }
-    
+
+    private JButton styledButton(String text) {
+        JButton button = new JButton(text);
+        button.setFont(new Font("Sans Serif", Font.PLAIN, 14));
+        button.setFocusPainted(false);
+        button.setBackground(Color.LIGHT_GRAY);
+        button.setBorder(BorderFactory.createEmptyBorder(6, 15, 6, 15));
+        return button;
+    }
+
     public Movie[] listAllMovies() {
         String sql = "SELECT * FROM Movies";
         List<Movie> movies = new ArrayList<>();
-        try (Connection conn = DBC.Connect(); 
+        try (Connection conn = DBC.Connect();
             PreparedStatement stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery()) {
 
@@ -122,14 +160,11 @@ public class MovieListPanel extends JPanel{
                 int duration = rs.getInt("duration");
                 String language = rs.getString("lang");
 
-                Movie movie = new Movie(id, title, genre, duration, language);
-                movies.add(movie);
+                movies.add(new Movie(id, title, genre, duration, language));
             }
-            
             return movies.toArray(new Movie[0]);
-
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Some Error has occured, Please try again", "SQLError", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Some Error has occurred, Please try again", "SQLError", JOptionPane.ERROR_MESSAGE);
         }
         return null;
     }

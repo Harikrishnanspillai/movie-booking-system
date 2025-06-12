@@ -22,16 +22,14 @@ CREATE TABLE TimeSlots (
     movie_id INT NOT NULL,
     start_time DATETIME NOT NULL,
     end_time DATETIME NOT NULL,
-    price DECIMAL(5, 2) NOT NULL,
-    FOREIGN KEY (movie_id) REFERENCES Movies(movie_id)
+    price DECIMAL(5, 2) NOT NULL
 );
 
 CREATE TABLE Seats (
     seat_id INT PRIMARY KEY AUTO_INCREMENT,
     slot_id INT NOT NULL,
     seat_number VARCHAR(3) NOT NULL,
-    is_booked BOOLEAN DEFAULT FALSE,
-    FOREIGN KEY (slot_id) REFERENCES TimeSlots(slot_id)
+    is_booked BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE Snacks (
@@ -48,8 +46,7 @@ CREATE TABLE Bookings (
     booking_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     num_tickets INT NOT NULL,
     total_cost DECIMAL(10,2) NOT NULL,
-    FOREIGN KEY (customer_id) REFERENCES Users(user_id),
-    FOREIGN KEY (slot_id) REFERENCES TimeSlots(slot_id)
+    FOREIGN KEY (customer_id) REFERENCES Users(user_id)
 );
 
 CREATE TABLE BookingSeats (
@@ -70,4 +67,4 @@ CREATE TABLE BookingSnacks (
 );
 
 
-INSERT INTO USERS (name, email, password, role) VALUES ("admin", "admin@mbs.com", "passwd", "ADMIN");
+INSERT INTO USERS (name, email, password, role) VALUES ("admin", "admin@mbs.com", "sdvvzg", "ADMIN");
