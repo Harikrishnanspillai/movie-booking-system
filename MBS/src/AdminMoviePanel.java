@@ -137,7 +137,7 @@ public class AdminMoviePanel extends JPanel {
         add(confirmButton);
     }
 
-    private JButton styledButton(String text) {
+    public JButton styledButton(String text) {
         JButton button = new JButton(text);
         button.setFont(new Font("SansSerif", Font.PLAIN, 14));
         button.setFocusPainted(false);

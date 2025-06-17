@@ -1,0 +1,343 @@
+@startuml
+
+abstract class User {
+    - userID : int
+    - name : String
+    - email : String
+    - passwd : String
+    + getUserID() : int
+    + getName() : String
+    + getEmail() : String
+    + getPasswd() : String
+}
+
+class Admin {
+    + Admin(userID:int, name:String, email:String, passwd:String)
+}
+
+class Customer {
+    + Customer(userID:int, name:String, email:String, passwd:String)
+}
+
+User <|-- Admin
+User <|-- Customer
+
+class Movie {
+    - id : int
+    - title : String
+    - genre : String
+    - duration : int
+    - language : String
+    + getId() : int
+    + getTitle() : String
+    + getGenre() : String
+    + getDuration() : int
+    + getLanguage() : String
+}
+
+class Movie {
+    - id : int
+    - title : String
+    - genre : String
+    - duration : int
+    - language : String
+    + getId() : int
+    + getTitle() : String
+    + getGenre() : String
+    + getDuration() : int
+    + getLanguage() : String
+}
+
+class Snack {
+    - id : int
+    - name : String
+    - price : double
+    - quantity : int
+    + getId() : int
+    + getName() : String
+    + getPrice() : double
+    + getQuantity() : int
+}
+
+class Seat {
+    - seatId : int
+    - slotId : int
+    - seatNumber : String
+    - isBooked : int
+    + getSeatId() : int
+    + getSlotId() : int
+    + getSeatNumber() : String
+    + isBooked() : int
+}
+
+class TimeSlot {
+    - slotId : int
+    - movieId : int
+    - startTime : String
+    - endTime : String
+    - price : double
+    + getSlotId() : int
+    + getMovieId() : int
+    + getStartTime() : String
+    + getEndTime() : String
+    + getPrice() : double
+}
+
+class Ticket {
+    - bookingId : int
+    - customerId : int
+    - slotId : int
+    - movieTitle : String
+    - bookingTime : String
+    - numTickets : int
+    - totalCost : double
+    - seats : List<Seat>
+    - snacks : List<Snack>
+    + getBookingId() : int
+    + getCustomerId() : int
+    + getSlotId() : int
+    + getMovieTitle() : String
+    + getBookingTime() : String
+    + getNumTickets() : int
+    + getTotalCost() : double
+    + getSeats() : List<Seat>
+    + getSnacks() : List<Snack>
+}
+
+' Relationships
+TimeSlot "1" o-- "1" Movie : belongs to
+Seat "1" o-- "1" TimeSlot : belongs to
+Ticket "1" *-- "*" Seat : bookedSeats >
+Ticket "1" *-- "*" Snack : bookedSnacks >
+
+' Panel Classes
+
+class UserPanel {
+    - parentPanel : JPanel
+    - static u : User
+    - loginButton : JPanel
+    - signUpButton : JButton
+    + UserPanel(JPanel parent)
+    + styledButton(String text) : JButton
+    + static setUser(User user) : void
+    + static getUser() : User
+    + static clearUser() : void
+}
+
+class AdminMoviePanel {
+    - parentPanel : JPanel
+    - prevPanel : JPanel
+    - nextPanel : JPanel
+    + AdminMoviePanel(parent:JPanel, prePanel:JPanel)
+    + AdminMoviePanel(parent:JPanel, prePanel:JPanel, MovieID:int, newTitle:String, newGenre:String, newDuration:int, newLanguage:String)
+    + AdminMoviePanel(parent:JPanel, prePanel:JPanel, movieID:int, movieTitle:String)
+    + addMovie(title:String, genre:String, duration:int, language:String) : void
+    + editMovie(MovieID:int, newTitle:String, newGenre:String, newDuration:int, newLanguage:String) : void
+    + removeMovie(movieId:int) : void
+    + addTimeSlot(movieId:int, start:String, end:String, price:double) : void
+    + deleteTimeSlot(movieId:int) : void
+    + addSeats(slotId:int) : void
+    + styledButton(text:String) : JButton
+}
+
+class AdminPanel {
+    - parentPanel : JPanel
+    - prevPanel : JPanel
+    - nextPanel : JPanel
+    + AdminPanel(u:User , parent:JPanel, prePanel:JPanel)
+    + styledButton(text:String) : JButton
+}
+
+
+class AdminSnackPanel {
+    - parentPanel : JPanel
+    - prevPanel : JPanel
+    + AdminSnackPanel(parent:JPanel, prePanel:JPanel)
+    + AdminSnackPanel(parent:JPanel, prePanel:JPanel, snackID:int, newName:String, newPrice:double, newQuantity:int)
+    + AdminSnackPanel(parent:JPanel, prePanel:JPanel, snackID:int, snackName:String)
+    + addSnack(name:String, price:double, quantity:int) : void
+    + editSnack(SnackID:int, newName:String, newPrice:double, quantity:int) : void
+    + removeSnack(snackId:int) : void
+    - styledButton(text:String) : JButton
+}
+
+class AdminTimeSlotPanel {
+    - parentPanel : JPanel
+    - prevPanel : JPanel
+    + AdminTimeSlotPanel(parent:JPanel, prePanel:JPanel)
+    + AdminTimeSlotPanel(parent:JPanel, prePanel:JPanel, slotId:int, newMovieId:int, newStart:String, newEnd:String, newPrice:double)
+    + AdminTimeSlotPanel(parent:JPanel, prePanel:JPanel, slotId:int, start:String, end:String)
+    + addTimeSlot(movieId:int, start:String, end:String, price:double) : void
+    + editTimeSlot(slotId:int, newMovieId:int, newStart:String, newEnd:String, newPrice:double) : void
+    + deleteTimeSlot(slotId:int) : void
+    + MovieName(movieId:int) : String
+    + MovieID(movieName:String) : int
+    + addSeats(slotId:int) : void
+    + deleteSeat(slotId:int) : void
+    - styledButton(text:String) : JButton
+}
+
+class BookingPanel {
+    - parentPanel : JPanel
+    - prevPanel : JPanel
+    - nextPanel : JPanel
+    + BookingPanel(parentPanel:JPanel, prevPanel:JPanel, seatIds:Integer[])
+    + seatPrice(seatId:int) : double
+    - styledButton(text:String) : JButton
+}
+
+class CustomerMoviePanel {
+    - parentPanel : JPanel
+    - prevPanel : JPanel
+    - nextPanel : JPanel
+    + CustomerMoviePanel(parent:JPanel, prePanel:JPanel)
+    + listAllMovies() : Movie[]
+    - styledButton(text:String) : JButton
+}
+
+class CustomerPanel {
+    - parentPanel : JPanel
+    - prevPanel : JPanel
+    - nextPanel : JPanel
+    + CustomerPanel(u:User , parent:JPanel, prePanel:JPanel)
+    - styledButton(text:String) : JButton
+}
+
+class CustomerTicketsPanel {
+    - parentPanel : JPanel
+    - prevPanel : JPanel
+    - nextPanel : JPanel
+    + CustomerTicketsPanel(parent:JPanel, prePanel:JPanel)
+    + listAllTickets(customerId:int) : Ticket[]
+    - styledButton(text:String) : JButton
+    - getSeatsForBooking(conn:Connection, bookingId:int) : List<Seat>
+    - getSnacksForBooking(conn:Connection, bookingId:int) : List<Snack>
+    + getSeatNos(seats:List<Seat>) : String[]
+    + getSnackNames(snacks:List<Snack>) : String[]
+    + arrToStr(arr:String[]) : String
+}
+
+class CustomerTimeSlotPanel {
+    - parentPanel : JPanel
+    - prevPanel : JPanel
+    - nextPanel : JPanel
+    + CustomerTimeSlotPanel(parent:JPanel, prePanel:JPanel, MovieId:int)
+    + findSlots(movieId:int) : TimeSlot[]
+    + MovieName(movieId:int) : String
+    + MovieID(movieName:String) : int
+    - styledButton(text:String) : JButton
+}
+
+class DBC {
+    - static final String URL
+    - static final String USER
+    - static final String PASSWORD
+    + static Connect() : Connection
+}
+
+class LoginPanel {
+    - parentPanel : JPanel
+    - prevPanel : JPanel
+    - nextPanel : JPanel
+    + LoginPanel(parent:JPanel, prePanel:JPanel)
+    + login(email:String, passwd:String) : User
+    - styledButton(text:String) : JButton
+}
+
+class SignUpPanel {
+    - parentPanel : JPanel
+    - prevPanel : JPanel
+    - nextPanel : JPanel
+    + SignUpPanel(parent:JPanel, prePanel:JPanel)
+    + styledButton(text:String) : JButton
+    + static signup(name:String, email:String, passwd:String) : User
+}
+
+class PaymentPanel {
+    - parentPanel : JPanel
+    - prevPanel : JPanel
+    - nextPanel : JPanel
+    + PaymentPanel(parent:JPanel, prePanel:JPanel, seatIds:Integer[])
+    + PaymentPanel(parent:JPanel, prePanel:JPanel, seatIds:Integer[], snackIds:Integer[])
+    - styledButton(text:String) : JButton
+    + bookSeats(seatId:int, bookingId:int)
+    + bookSnacks(snackId:int, bookingId:int)
+    + bookTickets(userId:int, seatIds:Integer[], upi:String) : int
+    + bookTickets(userId:int, seatIds:Integer[], snackIds:Integer[], upi:String) : int
+    + countOccurrences(arr:Integer[]) : int[][]
+    + getSnackPrice(SnackData:int[][]) : double
+    + seatPrice(seatId:int) : double
+}
+
+class SnackPanel {
+    - parentPanel : JPanel
+    - prevPanel : JPanel
+    - nextPanel : JPanel
+    + SnackPanel(parent:JPanel, prePanel:JPanel, seatIds:Integer[])
+    - styledButton(text:String) : JButton
+    + listAllSnacks() : Snack[]
+}
+
+class MovieListPanel {
+    - parentPanel : JPanel
+    - prevPanel : JPanel
+    - nextPanel : JPanel
+    + MovieListPanel(parent:JPanel, prePanel:JPanel)
+    + MovieListPanel(parent:JPanel, prePanel:JPanel, isRemoveMode:boolean)
+    - styledButton(text:String) : JButton
+    + listAllMovies() : Movie[]
+}
+
+class SnackListPanel {
+    - parentPanel : JPanel
+    - prevPanel : JPanel
+    - nextPanel : JPanel
+    + SnackListPanel(parent:JPanel, prePanel:JPanel)
+    + SnackListPanel(parent:JPanel, prePanel:JPanel, b:boolean)
+    - styledButton(text:String) : JButton
+    + listAllSnacks() : Snack[]
+}
+
+class TimeSlotListPanel {
+    - parentPanel : JPanel
+    - prevPanel : JPanel
+    - nextPanel : JPanel
+    + TimeSlotListPanel(parent:JPanel, prePanel:JPanel)
+    + TimeSlotListPanel(parent:JPanel, prePanel:JPanel, isRemoveMode:boolean)
+    - styledButton(text:String) : JButton
+    + listAllSlots() : TimeSlot[]
+    + MovieName(movieId:int) : String
+    + MovieID(movieName:String) : int
+}
+
+' Relationships for Panels
+
+
+
+UserPanel "1" --> "0..1" User : current user
+LoginPanel "1" --> "1" User : authenticates
+SignUpPanel "1" --> "1" User : registers
+AdminPanel "1" --> "1" User : user
+CustomerPanel "1" --> "1" User : user
+AdminMoviePanel "1" --> "*" Movie : manages
+AdminMoviePanel "1" --> "*" TimeSlot : manages
+AdminMoviePanel "1" --> "*" Seat : manages
+AdminSnackPanel "1" --> "*" Snack : manages
+AdminTimeSlotPanel "1" --> "*" TimeSlot : manages
+AdminTimeSlotPanel "1" --> "*" Movie : manages
+AdminTimeSlotPanel "1" --> "*" Seat : manages
+BookingPanel "1" --> "*" Seat : books
+CustomerMoviePanel "1" --> "*" Movie : selcets
+CustomerTicketsPanel "1" --> "*" Ticket : manages
+CustomerTicketsPanel "1" --> "*" Seat : retrieves
+CustomerTicketsPanel "1" --> "*" Snack : retrieves
+CustomerTimeSlotPanel "1" --> "*" TimeSlot : views
+CustomerTimeSlotPanel "1" --> "*" Movie : views
+PaymentPanel "1" --> "*" Seat : processes payment
+PaymentPanel "1" --> "*" Snack : processes payment
+SnackPanel "1" --> "*" Snack : lists
+MovieListPanel "1" --> "*" Movie : lists
+SnackListPanel "1" --> "*" Snack : lists
+TimeSlotListPanel "1" --> "*" TimeSlot : lists
+TimeSlotListPanel "1" --> "*" Movie : associated
+@enduml
